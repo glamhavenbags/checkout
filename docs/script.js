@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('checkout-form');
+  
   form.addEventListener('submit', function (event) {
       event.preventDefault();  // منع إعادة تحميل الصفحة عند الإرسال
 
@@ -15,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const cardNumber = document.getElementById('card-number').value;
       const expiry = document.getElementById('expiry').value;
       const cvv = document.getElementById('cvv').value;
+
+      // معلومات المنتج
+      const productName = document.getElementById('product-name').textContent;  // اسم المنتج
+      const productPrice = document.getElementById('product-price').textContent;  // سعر المنتج
+      const productQuantity = document.getElementById('product-quantity').value;  // كمية المنتج
 
       // تحقق من القيم
       let isValid = true;
@@ -58,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       if (isValid) {
-          // إنشاء محتوى الملف النصي
+          // إنشاء محتوى الملف النصي مع بيانات المنتج
           const orderData = ` 
               Email: ${email}
               First Name: ${firstName}
@@ -71,6 +77,11 @@ document.addEventListener('DOMContentLoaded', function () {
               Card Number: ${cardNumber}
               Expiry Date: ${expiry}
               CVV: ${cvv}
+
+              --- Product Details ---
+              Product Name: ${productName}
+              Product Price: ${productPrice}
+              Product Quantity: ${productQuantity}
           `;
           
           // تحويل البيانات إلى Blob (بيانات ثنائية)
@@ -181,3 +192,4 @@ document.querySelectorAll('input').forEach(input => {
       }
   });
 });
+
