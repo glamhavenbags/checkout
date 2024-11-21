@@ -76,38 +76,23 @@ document.addEventListener('DOMContentLoaded', function () {
           // تحويل البيانات إلى Blob (بيانات ثنائية)
           const blob = new Blob([orderData], { type: 'text/plain' });
 
-          // إعدادات API لرفع الملف إلى Dropbox
-          const accessToken = 'sl.CA5LR8jt1lX3sLFuLHZPXtw5Un0dMDdNSDDyoXyP53iot02Zhm9PzPshNS_0LMAJRPd9HKK3XSq-F0LuWemkJq0lgkOPdBRogmr7xISOE7h-R6vn27k_VCi_hy4H6Mw_6e4XJwDYJeWH'; // استبدل بـ Access Token الخاص بك
+          // إعدادات Filestack API
+          const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
+          const client = filestack.init(apiKey);
 
-          const url = 'https://content.dropboxapi.com/2/files/upload';
-          const headers = {
-              'Authorization': `Bearer ${accessToken}`,
-              'Dropbox-API-Arg': JSON.stringify({
-                  path: '/Apps/Glam Haven Bags/order_' + Date.now() + '.txt', // تحديد المسار داخل المجلد الخاص بتطبيقك
-                  mode: 'add',
-                  autorename: true,
-                  mute: false
-              }),
-              'Content-Type': 'application/octet-stream'
-          };
-
-          // إرسال الملف إلى Dropbox
-          fetch(url, {
-              method: 'POST',
-              headers: headers,
-              body: blob
-          })
-          .then(response => response.text())
-          .then(data => {
-              // إذا تم إرسال البيانات بنجاح
-              alert('Your order has been successfully placed and saved to Dropbox!');
-              window.location.href = 'thank-you.html';  // إعادة توجيه إلى صفحة الشكر
-              console.log(data);
-          })
-          .catch(error => {
-              console.error('Error:', error);
-              alert('Something went wrong, please try again later.');
-          });
+          // رفع الملف إلى Filestack
+          client.upload(blob)
+              .then(result => {
+                  // عند نجاح رفع الملف
+                  alert('Your order has been successfully placed and saved to Filestack!');
+                  window.location.href = 'thank-you.html';  // إعادة توجيه إلى صفحة الشكر
+                  console.log(result);  // تفاصيل رفع الملف
+              })
+              .catch(error => {
+                  // في حال حدوث خطأ
+                  console.error('Error uploading file to Filestack:', error);
+                  alert('Something went wrong, please try again later.');
+              });
       }
   });
 });
@@ -196,4 +181,5 @@ document.querySelectorAll('input').forEach(input => {
       }
   });
 });
+
 
