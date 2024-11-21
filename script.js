@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
               .then(result => {
                   // عند نجاح رفع الملف
                   alert('Your order has been successfully placed and saved to Filestack!');
-                  window.location.href = 'thank-you.html';  // إعادة توجيه إلى صفحة الشكر
+                  window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه إلى صفحة الشكر
                   console.log(result);  // تفاصيل رفع الملف
               })
               .catch(error => {
