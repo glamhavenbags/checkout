@@ -9,21 +9,45 @@ body, html {
 
 /* تنسيق العنوان الرئيسي */
 h1 {
-  color: #333;  /* لون داكن للتباين */
+  color: #333;
   text-align: center;
   font-size: 36px;
   margin-top: 100px;
   font-weight: bold;
 }
 
+/* تنسيق معلومات المنتج */
+.product-info {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.product-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.product-details {
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-details p {
+  margin: 5px 0;
+}
+
 /* الحاوية الرئيسية للنموذج */
 .form-container {
-  width: 70%;  /* عرض النموذج */
+  width: 70%;
   margin: 50px auto;
   padding: 30px;
-  background-color: rgba(255, 255, 255, 0.9); /* مربع أبيض شفاف مع شفافية خفيفة */
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* ظل ناعم حول النموذج */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 
@@ -33,7 +57,7 @@ h1 {
 }
 
 h2 {
-  color: #333;  /* لون داكن للتباين */
+  color: #333;
   font-size: 24px;
 }
 
@@ -56,63 +80,30 @@ select {
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #f9f9f9;  /* لون خلفية فاتح للحقل */
+  background-color: #f9f9f9;
   margin-bottom: 10px;
   box-sizing: border-box;
-  transition: border-color 0.3s ease;  /* تأثير التدرج عند التركيز */
-}
-
-/* تخصيص الحقل "اختيار الولاية" */
-select {
-  -webkit-appearance: none;  /* إزالة الشكل الافتراضي في بعض المتصفحات */
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"%3E%3Cpath fill="none" stroke="%23333" stroke-width="1" d="M1 3l4 4 4-4"/%3E%3C/svg%3E'); 
-  background-repeat: no-repeat;
-  background-position: right 10px center; /* إضافة السهم على اليمين */
-  background-size: 10px;
-  padding-right: 40px;  /* مساحة للسهم */
-  width: 100%;
-}
-
-/* تنسيق الحقول التي بجانب بعضها (مثل state, city, zip) */
-.input-group.half {
-  width: 31%; /* جعل الحقل يأخذ 31% من العرض ليكون هناك ثلاث حقول بجانب بعضها */
-  display: inline-block;
-  margin-right: 3%;  /* مسافة بين الحقول */
-  box-sizing: border-box;
-}
-
-.input-group.half:last-child {
-  margin-right: 0;
 }
 
 /* تنسيق زر الإرسال */
 button {
   width: 100%;
   padding: 15px;
-  background-color: #4CAF50; /* لون أخضر مريح */
+  background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 18px;
   cursor: pointer;
-  transition: background-color 0.3s ease; /* تأثير عند التحويم */
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #45a049; /* تأثير اللون عند التحويم */
+  background-color: #45a049;
 }
 
 button:active {
   background-color: #398c3c;
-}
-
-/* تنسيق الحقول عند التركيز */
-input:focus,
-select:focus {
-  border-color: #4CAF50; /* تغيير لون الحدود عند التركيز */
-  outline: none;
 }
 
 /* تحسين التنسيق للأحجام الصغيرة */
@@ -120,14 +111,6 @@ select:focus {
   .form-container {
     width: 90%;
   }
-
-  .input-group.half {
-    width: 100%; /* جعل الحقول التي بجانب بعضها تأخذ عرض كامل على الأجهزة الصغيرة */
-    margin-right: 0;
-  }
-
-  /* تغيير مظهر الحقل "اختيار الولاية" ليأخذ مساحة كاملة في الأجهزة الصغيرة */
-  select {
-    width: 100%;
-  }
 }
+
+
