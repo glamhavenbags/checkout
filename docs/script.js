@@ -14,11 +14,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const urlParams = getUrlParams();
 
-  // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = `Name: ${urlParams.name || ''}`;
-  document.getElementById('product-color').textContent = `Color: ${urlParams.color || ''}`;
-  document.getElementById('product-price').textContent = `Price: ${urlParams.price || ''}`;
-  document.getElementById('total-price').textContent = `Total Price: ${urlParams.total || ''}`;
+  // تأكد من وجود المعلمات في الرابط وطباعة القيم للتأكد
+  console.log('Received URL Params:', urlParams);
+
+  // التحقق من وجود المعلمات قبل استخدامها
+  if (urlParams.name && urlParams.color && urlParams.price && urlParams.total) {
+    // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
+    document.getElementById('product-name').textContent = `Name: ${urlParams.name}`;
+    document.getElementById('product-color').textContent = `Color: ${urlParams.color}`;
+    document.getElementById('product-price').textContent = `Price: ${urlParams.price}`;
+    document.getElementById('total-price').textContent = `Total Price: ${urlParams.total}`;
+  } else {
+    // في حال عدم وجود المعلمات، اعرض رسالة خطأ أو قيمة افتراضية
+    console.error('Missing product information in URL parameters.');
+    document.getElementById('product-name').textContent = 'Name: N/A';
+    document.getElementById('product-color').textContent = 'Color: N/A';
+    document.getElementById('product-price').textContent = 'Price: N/A';
+    document.getElementById('total-price').textContent = 'Total Price: N/A';
+  }
 
   // إضافة مستمع للإرسال
   form.addEventListener('submit', function (event) {
@@ -212,5 +225,6 @@ document.querySelectorAll('input').forEach(input => {
       }
   });
 });
+
 
 
