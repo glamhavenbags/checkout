@@ -1,6 +1,26 @@
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('checkout-form');
-  
+
+  // استخراج المعلمات من الرابط
+  function getUrlParams() {
+    const params = {};
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    urlParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    return params;
+  }
+
+  const urlParams = getUrlParams();
+
+  // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
+  document.getElementById('product-name').textContent = `Name: ${urlParams.name || ''}`;
+  document.getElementById('product-color').textContent = `Color: ${urlParams.color || ''}`;
+  document.getElementById('product-price').textContent = `Price: ${urlParams.price || ''}`;
+  document.getElementById('total-price').textContent = `Total Price: ${urlParams.total || ''}`;
+
+  // إضافة مستمع للإرسال
   form.addEventListener('submit', function (event) {
       event.preventDefault();  // منع إعادة تحميل الصفحة عند الإرسال
 
@@ -18,9 +38,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const cvv = document.getElementById('cvv').value;
 
       // معلومات المنتج
-      const productName = document.getElementById('product-name').textContent;  // اسم المنتج
-      const productPrice = document.getElementById('product-price').textContent;  // سعر المنتج
-      const productQuantity = document.getElementById('product-quantity').value;  // كمية المنتج
+      const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
+      const productPrice = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
+      const productQuantity = 1;  // هنا يمكن تعيين كمية المنتج من الرابط إذا تم إرسالها
 
       // تحقق من القيم
       let isValid = true;
@@ -192,4 +212,5 @@ document.querySelectorAll('input').forEach(input => {
       }
   });
 });
+
 
