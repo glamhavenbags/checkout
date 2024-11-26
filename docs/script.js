@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
-  if (urlParams.imageUrl) {
-    productImage.src = urlParams.imageUrl;  // رابط الصورة
+  if (urlParams.image) {
+    productImage.src = urlParams.image;  // رابط الصورة
     productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
   }
 
