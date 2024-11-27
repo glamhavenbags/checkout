@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const productImage = document.getElementById('product-image');
   if (urlParams.productImage) {
     productImage.src = urlParams.productImage;  // رابط الصورة
-    productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
   }
 
   // عرض الكمية
