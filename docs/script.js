@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const productImage = document.getElementById('product-image');
   if (urlParams.image) {
     // تحقق من أن الرابط يبدأ بـ "http://" أو "https://"
-    const imageUrl = urlParams.image;
+    const imageUrl = urlParams.productImage;
     if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
       productImage.src = imageUrl;  // رابط الصورة
       productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
