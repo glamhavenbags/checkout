@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
-  if (urlParams.image) {
+  if (urlParams.productImage) {
     // تحقق من أن الرابط يبدأ بـ "http://" أو "https://"
     const imageUrl = urlParams.productImage;
     if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
     const productPriceText = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
     const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1];  // كمية المنتج
-    const productImageUrl = urlParams.imageUrl || '';  // رابط الصورة
+    const productImageUrl = urlParams.productImage || '';  // رابط الصورة
 
     // تحقق من القيم
     let isValid = true;
@@ -237,7 +237,6 @@ document.querySelectorAll('input').forEach(input => {
       }
   });
 });
-
 
 
 
