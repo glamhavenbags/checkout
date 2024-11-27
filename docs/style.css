@@ -38,6 +38,19 @@ h1 {
 
 .product-details p {
   margin: 5px 0;
+  display: inline-block;
+}
+
+#product-color, #product-price, #product-quantity {
+  margin-right: 10px;
+}
+
+#product-color::after, #product-price::after, #product-quantity::after {
+  content: " || ";
+}
+
+#product-quantity::after {
+  content: "";
 }
 
 /* الحاوية الرئيسية للنموذج */
@@ -85,6 +98,24 @@ select {
   box-sizing: border-box;
 }
 
+/* تنسيق حقول الشحن لتكون بجانب بعضها */
+.input-group.half {
+  display: inline-block;
+  width: calc(33.33% - 10px);
+  margin-right: 10px;
+}
+
+.input-group.half:last-child {
+  margin-right: 0;
+}
+
+/* تقليل عرض الحقول الأخرى */
+#first-name, #last-name, #city, #state, #zip-code {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+}
+
 /* تنسيق زر الإرسال */
 button {
   width: 100%;
@@ -110,6 +141,12 @@ button:active {
 @media (max-width: 768px) {
   .form-container {
     width: 90%;
+  }
+
+  /* تحسين التنسيق عند الشاشات الصغيرة */
+  .input-group.half {
+    width: 100%;
+    margin-right: 0;
   }
 }
 
