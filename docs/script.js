@@ -23,14 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // عرض الصورة
   const productImage = document.getElementById('product-image');
   if (urlParams.productImage) {
-    // تحقق من أن الرابط يبدأ بـ "http://" أو "https://"
-    const imageUrl = urlParams.productImage;
-    if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-      productImage.src = imageUrl;  // رابط الصورة
-      productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
-    } else {
-      console.error('Invalid image URL:', imageUrl);
-    }
+    productImage.src = urlParams.productImage;  // رابط الصورة
+    productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
   }
 
   // عرض الكمية
@@ -208,7 +202,7 @@ function showErrorMessage(message, fieldId) {
 
 // دالة لإزالة رسائل الخطأ عند الكتابة في الحقل
 function removeErrorMessages() {
-  const errorMessages = document.querySelectorAll('.error-message');
+  const errorMessages = document.querySelectorAll('[id$="-error"]');
   errorMessages.forEach(msg => msg.remove());
 }
 
@@ -237,6 +231,7 @@ document.querySelectorAll('input').forEach(input => {
       }
   });
 });
+
 
 
 
