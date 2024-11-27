@@ -22,8 +22,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
-  if (urlParams.productImage) {
-    productImage.src = urlParams.productImage;  // رابط الصورة
+  if (urlParams.image) {
+    // تحقق من أن الرابط يبدأ بـ "http://" أو "https://"
+    const imageUrl = urlParams.image;
+    if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+      productImage.src = imageUrl;  // رابط الصورة
+      productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
+    } else {
+      console.error('Invalid image URL:', imageUrl);
+    }
   }
 
   // عرض الكمية
