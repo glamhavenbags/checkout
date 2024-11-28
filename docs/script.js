@@ -21,10 +21,14 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('total-price').textContent = `Total Price: ${urlParams.total || ''}`;
 
   // عرض الصورة
-  if (urlParams.productImage) {
-    product-image.src = urlParams.image;  // رابط الصورة
-    productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
+ const productImage = document.getElementById('product-image');
+  if (urlParams.image) {
+    productImage.src = urlParams.image;  // تعيين رابط الصورة
+    productImage.alt = `${urlParams.name || 'Product'} image`;  // إضافة نص بديل
+  } else {
+    productImage.style.display = 'none';  // إذا لم تكن هناك صورة، اخفاء العنصر
   }
+
 
   // عرض الكمية
   const productQuantity = parseInt(urlParams.quantity, 10) || 1; // تعيين الكمية الافتراضية إلى 1 إذا لم يتم إرسالها
