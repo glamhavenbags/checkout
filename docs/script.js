@@ -21,9 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('total-price').textContent = `Total Price: ${urlParams.total || ''}`;
 
   // عرض الصورة
-  const productImage = document.getElementById('product-image');
   if (urlParams.productImage) {
-    productImage.src = urlParams.image;  // رابط الصورة
+    product-image.src = urlParams.image;  // رابط الصورة
     productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
   }
 
