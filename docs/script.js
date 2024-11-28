@@ -15,32 +15,26 @@ document.addEventListener('DOMContentLoaded', function () {
   const urlParams = getUrlParams();
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = Name: ${urlParams.name || ''};
-  document.getElementById('product-color').textContent = Color: ${urlParams.color || ''};
-  document.getElementById('product-price').textContent = Price: ${urlParams.price || ''};
-  document.getElementById('total-price').textContent = Total Price: ${urlParams.total || ''};
+  document.getElementById('product-name').textContent = `Name: ${urlParams.name || ''}`;
+  document.getElementById('product-color').textContent = `Color: ${urlParams.color || ''}`;
+  document.getElementById('product-price').textContent = `Price: ${urlParams.price || ''}`;
+  document.getElementById('total-price').textContent = `Total Price: ${urlParams.total || ''}`;
 
   // عرض الصورة
- const productImage = document.getElementById('product-image');
-  const productImageContainer = document.querySelector('.product-info');
-
-  if (urlParams.image) {
-    // التأكد من أن الصورة ليست فارغة
-    productImage.src = urlParams.image;  // تعيين رابط الصورة
-    productImage.alt = ${urlParams.name || 'Product'} image;  // إضافة نص بديل للصورة
-    productImage.style.display = 'block';  // إظهار الصورة
-  
+  const productImage = document.getElementById('product-image');
+  if (urlParams.productImage) {
+    productImage.scr = urlParams.productImage;  // رابط الصورة
+    productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
   }
-
 
   // عرض الكمية
   const productQuantity = parseInt(urlParams.quantity, 10) || 1; // تعيين الكمية الافتراضية إلى 1 إذا لم يتم إرسالها
-  document.getElementById('product-quantity').textContent = Quantity: ${productQuantity};
+  document.getElementById('product-quantity').textContent = `Quantity: ${productQuantity}`;
 
   // حساب السعر الإجمالي
   const productPrice = parseFloat(urlParams.price) || 0; // تحويل السعر إلى عدد عشري
   const totalPrice = (productPrice * productQuantity).toFixed(2); // حساب السعر الإجمالي
-  document.getElementById('total-price').textContent = Total Price: $${totalPrice};
+  document.getElementById('total-price').textContent = `Total Price: $${totalPrice}`;
 
   // إضافة مستمع للإرسال
   form.addEventListener('submit', function (event) {
@@ -108,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (isValid) {
         // إنشاء محتوى الملف النصي مع بيانات المنتج
-        const orderData =  
+        const orderData = ` 
             Email: ${email}
             First Name: ${firstName}
             Last Name: ${lastName}
@@ -127,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
             Product Quantity: ${productQuantityText}
             Product Image URL: ${productImageUrl}
             Total Price: $${totalPrice}
-        ;
+        `;
         
         // تحويل البيانات إلى Blob (بيانات ثنائية)
         const blob = new Blob([orderData], { type: 'text/plain' });
@@ -179,7 +173,7 @@ function validateExpiry(expiry) {
   // تحقق من أن تاريخ الصلاحية ليس في الماضي
   const currentDate = new Date();
   const [month, year] = expiry.split('/').map(val => parseInt(val, 10));
-  const expiryDate = new Date(20${year}, month - 1);  // تحويل إلى تاريخ مع السنة 20XX
+  const expiryDate = new Date(`20${year}`, month - 1);  // تحويل إلى تاريخ مع السنة 20XX
   return expiryDate >= currentDate;
 }
 
@@ -237,6 +231,7 @@ document.querySelectorAll('input').forEach(input => {
       }
   });
 });
+
 
 
 
