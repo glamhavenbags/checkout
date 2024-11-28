@@ -1,11 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () { 
   const form = document.getElementById('checkout-form');
-  const submitButton = document.getElementById('submit-button'); // تأكد من أن الزر موجود في HTML
   
-  if (!submitButton) {
-    console.error('زر الإرسال غير موجود في الصفحة');
-    return; // إذا لم يكن الزر موجودًا، توقف عن تنفيذ باقي الكود
-  }
 
   // استخراج المعلمات من الرابط
   function getUrlParams() {
