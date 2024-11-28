@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (isValid) {
         // تغيير النص إلى "يتم التحميل الآن" وتعطيل الزر
-        submitButton.textContent = 'يتم التحميل الآن';
+        submit-btn.textContent = 'يتم التحميل الآن';
         submitButton.disabled = true;
 
         // تغيير لون الحقول إلى لون غامق
@@ -163,8 +163,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // في حال حدوث خطأ
                 console.error('Error uploading file to Filestack:', error);
                 alert('Something went wrong, please try again later.');
-                submitButton.textContent = 'إكمال الشراء'; // إعادة النص إلى الأصل
-                submitButton.disabled = false; // إعادة تمكين الزر
+                submit-btn.textContent = 'إكمال الشراء'; // إعادة النص إلى الأصل
+                submit-btn.disabled = false; // إعادة تمكين الزر
             });
     }
   });
