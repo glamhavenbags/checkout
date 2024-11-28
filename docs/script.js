@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // عرض الصورة
   const productImage = document.getElementById('product-image');
   if (urlParams.productImage) {
-    productImage.src = urlParams.productImage;  // رابط الصورة
+    productImage.src = urlParams.image;  // رابط الصورة
     productImage.alt = `${urlParams.name} image`;  // نص بديل للصورة
   }
 
