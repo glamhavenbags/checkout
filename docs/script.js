@@ -22,11 +22,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // عرض الصورة
  const productImage = document.getElementById('product-image');
+  const productImageContainer = document.querySelector('.product-info');
+
   if (urlParams.image) {
+    // التأكد من أن الصورة ليست فارغة
     productImage.src = urlParams.image;  // تعيين رابط الصورة
-    productImage.alt = `${urlParams.name || 'Product'} image`;  // إضافة نص بديل
+    productImage.alt = `${urlParams.name || 'Product'} image`;  // إضافة نص بديل للصورة
+    productImage.style.display = 'block';  // إظهار الصورة
   } else {
-    productImage.style.display = 'none';  // إذا لم تكن هناك صورة، اخفاء العنصر
+    // إذا كانت الصورة غير موجودة أو فارغة، عرض صورة افتراضية
+    productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';  // صورة افتراضية
+    productImage.alt = 'No Image Available';
+    productImage.style.display = 'block';  // إظهار الصورة
   }
 
 
