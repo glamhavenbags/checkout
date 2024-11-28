@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('checkout-form');
+  const submitButton = document.getElementById('submit-button'); // افترض أن الزر يحمل الـ ID "submit-button"
 
   // استخراج المعلمات من الرابط
   function getUrlParams() {
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('total-price').textContent = `Total Price: ${urlParams.total || ''}`;
 
   // عرض الصورة
- const productImage = document.getElementById('product-image');
+  const productImage = document.getElementById('product-image');
   const productImageContainer = document.querySelector('.product-info');
 
   if (urlParams.image) {
@@ -35,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
     productImage.alt = 'No Image Available';
     productImage.style.display = 'block';  // إظهار الصورة
   }
-
 
   // عرض الكمية
   const productQuantity = parseInt(urlParams.quantity, 10) || 1; // تعيين الكمية الافتراضية إلى 1 إذا لم يتم إرسالها
@@ -111,6 +111,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (isValid) {
+        // تغيير النص إلى "يتم التحميل الآن" وتعطيل الزر
+        submitButton.textContent = 'يتم التحميل الآن';
+        submitButton.disabled = true;
+
+        // تغيير لون الحقول إلى لون غامق
+        const fields = form.querySelectorAll('input');
+        fields.forEach(field => {
+            field.style.backgroundColor = '#f0f0f0';  // خلفية فاتحة للإشارة إلى أن البيانات يتم إرسالها
+            field.style.color = '#555';  // تغيير اللون النصي
+        });
+
         // إنشاء محتوى الملف النصي مع بيانات المنتج
         const orderData = ` 
             Email: ${email}
@@ -152,6 +163,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // في حال حدوث خطأ
                 console.error('Error uploading file to Filestack:', error);
                 alert('Something went wrong, please try again later.');
+                submitButton.textContent = 'إكمال الشراء'; // إعادة النص إلى الأصل
+                submitButton.disabled = false; // إعادة تمكين الزر
             });
     }
   });
