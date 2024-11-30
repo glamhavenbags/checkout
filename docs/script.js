@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () { 
+document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('checkout-form');
 
   // استخراج المعلمات من الرابط
