@@ -15,10 +15,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const urlParams = getUrlParams();
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = Name: ${urlParams.name || ''};
-  document.getElementById('product-color').textContent = Color: ${urlParams.color || ''};
-  document.getElementById('product-price').textContent = Price: ${urlParams.price || ''};
-  document.getElementById('total-price').textContent = Total Price: ${urlParams.total || ''};
+  document.getElementById('product-name').textContent = Name: ${urlParams.name};
+  document.getElementById('product-color').textContent = Color: ${urlParams.color};
+  document.getElementById('product-price').textContent = Price: ${urlParams.price};
+  document.getElementById('total-price').textContent = Total Price: ${urlParams.total};
 
   // عرض الصورة
  const productImage = document.getElementById('product-image');
