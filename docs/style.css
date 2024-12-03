@@ -19,38 +19,50 @@ h1 {
 /* تنسيق معلومات المنتج */
 .product-info {
   text-align: center;
-  margin-bottom: 30px;
+  margin: 20px auto;
+  max-width: 600px;
 }
 
-.product-image {
-  max-width: 100%; /* التأكد من أن الصورة لن تتجاوز عرض الحاوية */
-  border-radius: 10px; /* حواف دائرية للصورة */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* إضافة ظل خفيف */
+#product-details {
+  display: none; /* إخفاء التفاصيل بشكل افتراضي */
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.product-details {
-  font-size: 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.product-info p {
+  font-size: 16px;
+  color: #333;
 }
 
-.product-details p {
-  margin: 5px 0;
-  display: inline-block;
+.product-info .short-info {
+  font-weight: bold;
+  cursor: pointer;
 }
 
-#product-color, #product-price, #product-quantity {
-  margin-right: 10px;
+#product-image {
+  max-width: 100%;
+  height: auto;
+  margin: 20px 0;
+  display: none; /* إخفاء الصورة حتى يتم عرض التفاصيل */
 }
 
-#product-color::after, #product-price::after, #product-quantity::after {
-  content: " || ";
+/* تنسيق زر إظهار التفاصيل */
+#toggle-details {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
 }
 
-#product-quantity::after {
-  content: "";
+#toggle-details:hover {
+  background-color: #0056b3;
 }
 
 /* الحاوية الرئيسية للنموذج */
