@@ -14,15 +14,20 @@
     <h1>🎉 Enter for a chance to win a trip to Miami! 🎉</h1>
 
     <div class="product-info">
-      <img id="product-image" src="" alt="Product Image" class="product-image" />
       <div id="product-details" class="product-details">
-          <p id="product-name">Name: </p>
-          <p id="product-color">Color: </p>
-          <p id="product-price">Price: </p>
-          <p id="product-quantity">Quantity: </p> <!-- عرض الكمية -->
-          <p id="total-price">Total Price: </p>  <!-- عرض السعر الإجمالي -->
+        <img id="product-image" src="" alt="Product Image" class="product-image" />
+        <p id="product-name">
+          <strong>Product:</strong> <span class="short-info">Click to see details</span>
+        </p>
+        <p id="product-color" class="short-info">Color: <span class="info">Loading...</span></p>
+        <p id="product-price" class="short-info">Price: <span class="info">Loading...</span></p>
+        <p id="product-quantity" class="short-info">Quantity: <span class="info">Loading...</span></p>
+        <p id="total-price" class="short-info">Total Price: <span class="info">Loading...</span></p>
       </div>
+      <!-- زر لعرض/إخفاء تفاصيل المنتج -->
+      <button id="toggle-details">Show Product Details</button>
     </div>
+    
   
     <div class="form-container">
       <form id="checkout-form">
@@ -45,7 +50,7 @@
             <input type="text" id="last-name" required placeholder="Your last name">
           </div>
           <div class="input-group">
-            <label for="address">Street, House/Apartment/Unit:</label>
+            <label for="Street, House/Apartment/Unit">Street, House/Apartment/Unit:</label>
             <input type="text" id="street-house-apartment-unit" required placeholder="Your address">
           </div>
           <div class="input-group half">
@@ -142,4 +147,5 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
