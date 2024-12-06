@@ -43,7 +43,7 @@ h1 {
 }
 
 #product-image {
-  max-width: 100%;
+  max-width: 50;
   height: auto;
   margin: 20px 0;
   display: none; /* إخفاء الصورة حتى يتم عرض التفاصيل */
@@ -122,7 +122,7 @@ select {
 }
 
 /* تقليل عرض الحقول الأخرى */
-#first-name, #last-name, #city, #state, #zip-code {
+#first-name, #last-name, #city, #state, #zip-code, #phone {
   width: 100%;
   padding: 8px;
   font-size: 14px;
@@ -161,5 +161,6 @@ button:active {
     margin-right: 0;
   }
 }
+
 
 
