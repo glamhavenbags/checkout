@@ -11,19 +11,17 @@
 <body>
 
   <div class="background-container">
-    <h1>🎉 Enter for a chance to win a trip to Miami! 🎉</h1>
 
     <div class="product-info">
       <div id="product-details" class="product-details">
         <img id="product-image" src="" alt="Product Image" class="product-image" />
-        <p id="product-name">
-          <strong>Product:</strong> <span class="short-info">Click to see details</span>
-        </p>
-        <p id="product-color" class="short-info">Color: <span class="info">Loading...</span></p>
-        <p id="product-price" class="short-info">Price: <span class="info">Loading...</span></p>
-        <p id="product-quantity" class="short-info">Quantity: <span class="info">Loading...</span></p>
-        <p id="total-price" class="short-info">Total Price: <span class="info">Loading...</span></p>
+        <p><strong>Name:</strong> <span id="product-name"></span></p>
+        <p><strong>Color:</strong> <span id="product-color"></span></p>
+        <p><strong>Price:</strong> <span id="product-price"></span></p>
+        <p><strong>Quantity:</strong> <span id="product-quantity"></span></p>
+        <p><strong>Total Price:</strong> <span id="total-price"></span></p>
       </div>
+      
       <!-- زر لعرض/إخفاء تفاصيل المنتج -->
       <button id="toggle-details">Show Product Details</button>
     </div>
@@ -116,6 +114,10 @@
           <div class="input-group half">
             <label for="zip-code">Zip Code:</label>
             <input type="text" id="zip-code" required placeholder="Zip code">
+          </div>
+          <div class="input-group">
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" required placeholder="Your phone number">
           </div>
         </div>
 
