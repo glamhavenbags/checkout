@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // حساب السعر الإجمالي
   const totalPrice = urlParams.price * urlParams.quantity;
-  document.getElementById('total-price').textContent = `Total Price: $${totalPrice}`;
+  document.getElementById('total-price').textContent = `$${totalPrice}`;
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
