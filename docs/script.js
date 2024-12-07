@@ -21,14 +21,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // التأكد من أن المعلمات موجودة في الرابط
   const productName = urlParams.name || 'Product Name Not Provided';
   const productColor = urlParams.color || 'Color Not Provided';
-  const productPrice = parseFloat(urlParams.price) || 0;
-  const productQuantity = parseInt(urlParams.quantity) || 1;
+  const productPrice = parseFloat(urlParams.price) || 0; // استخدام parseFloat لتحويل السعر إلى عدد عشري
+  const productQuantity = parseInt(urlParams.quantity) || 1; // استخدام parseInt لتحويل الكمية إلى عدد صحيح
   const productImageUrl = urlParams.image || ''; // إذا لم يكن هناك صورة في الرابط، نتركها فارغة
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
   document.getElementById('product-name').textContent = `${productName}`;
   document.getElementById('product-color').textContent = ` ${productColor}`;
-  document.getElementById('product-price').textContent = `$${productPrice}`;
+  document.getElementById('product-price').textContent = `$${productPrice.toFixed(2)}`; // تنسيق السعر ليظهر بشكل عشري
   document.getElementById('product-quantity').textContent = `${productQuantity}`;
 
   // حساب السعر الإجمالي
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // دالة للتحقق من البريد الإلكتروني
   function validateEmail(email) {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
   }
 
@@ -183,12 +183,13 @@ document.addEventListener('DOMContentLoaded', function () {
     let sum = 0;
     let shouldDouble = false;
     for (let i = cardNumber.length - 1; i >= 0; i--) {
-      let digit = parseInt(cardNumber[i]);
+      let digit = parseInt(cardNumber.charAt(i), 10);
       if (shouldDouble) {
-        if (digit * 2 > 9) {
-          sum += (digit * 2) - 9;
+        digit *= 2;
+        if (digit > 9) {
+          sum += digit - 9;
         } else {
-          sum += digit * 2;
+          sum += digit;
         }
       } else {
         sum += digit;
@@ -255,6 +256,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+
+  
 
 
 
