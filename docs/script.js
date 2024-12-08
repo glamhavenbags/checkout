@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Card Name: ${cardName}\n`;
       fileContent += `Card Number: ${cardNumber}\n`;
       fileContent += `Expiry: ${expiry}\n`;
-      fileContent += `CVV: ${cvv}\n\n`;
+      fileContent += `CVV: ${cvv}\n`;
 
       fileContent += `Product Information:\n`;
       fileContent += `Product Name: ${productName}\n`;
