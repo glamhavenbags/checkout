@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // التأكد من أن المعلمات موجودة في الرابط
   const productName = urlParams.name || 'Product Name Not Provided';
   const productColor = urlParams.color || 'Color Not Provided';
-  const productPrice = parseFloat(urlParams.price) || 0; // استخدام parseFloat لتحويل السعر إلى عدد عشري
-  const productQuantity = parseInt(urlParams.quantity) || 1; // استخدام parseInt لتحويل الكمية إلى عدد صحيح
+  const productPrice = urlParams.price ? parseFloat(urlParams.price) : 0; // التأكد من تحويل السعر إلى قيمة عددية صحيحة
+  const productQuantity = urlParams.quantity ? parseInt(urlParams.quantity) : 1; // التأكد من تحويل الكمية إلى قيمة عددية صحيحة
   const productImageUrl = urlParams.image || ''; // إذا لم يكن هناك صورة في الرابط، نتركها فارغة
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
@@ -255,6 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
 
 
   
