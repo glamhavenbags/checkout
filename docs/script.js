@@ -71,9 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const cvv = document.getElementById('cvv').value;
 
     // معلومات المنتج
-    const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
-    const productPriceText = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
-    const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1];  // كمية المنتج
+    const productName = document.getElementById('product-name').textContent;  // اسم المنتج
+    let productPriceText = document.getElementById('product-price').textContent;  // سعر المنتج
+    let productQuantityText = document.getElementById('product-quantity').textContent;  // كمية المنتج
     const productImageUrl = urlParams.productImage || '';  // رابط الصورة
 
     // تحقق من القيم
