@@ -111,6 +111,11 @@ document.addEventListener('DOMContentLoaded', function () {
       showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
     }
 
+    if (!validateCard(cardNumber)) {
+      isValid = false;
+      showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
+    }
+
     // تحقق من تاريخ الصلاحية
     if (!validateExpiry(expiry)) {
       isValid = false;
@@ -215,6 +220,22 @@ document.addEventListener('DOMContentLoaded', function () {
     return cvvPattern.test(cvv);
   }
 
+   // دالة لتنفيذ فحص لوهان
+   function luhnCheck(cardNumber) {
+    let sum = 0;
+    let shouldDouble = false;
+    for (let i = cardNumber.length - 1; i >= 0; i--) {
+      let digit = parseInt(cardNumber.charAt(i));
+      if (shouldDouble) {
+        digit *= 2;
+        if (digit > 9) digit -= 9;
+      }
+      sum += digit;
+      shouldDouble = !shouldDouble;
+    }
+    return (sum % 10 === 0);
+  }
+
   // دالة لرفع الملف إلى Filestack (محاكاة)
   function uploadFileToFilestack(content) {
     const file = new Blob([content], { type: 'text/plain' });
@@ -258,6 +279,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+
+
+
+
+
+  
+
+ 
 
 
 
