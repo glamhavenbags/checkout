@@ -174,11 +174,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // دالة للتحقق من اسم حامل البطاقة
   function validateCardName(cardName) {
-    const regex = /^[A-Za-z ]+$/;  // يجب أن يحتوي الاسم فقط على حروف ومسافات
+    const regex = /^[A-Za-z ]+$/;  // اسم حامل البطاقة يجب أن يحتوي على أحرف فقط
     return regex.test(cardName);
   }
 
-  // دالة للتحقق من رقم البطاقة باستخدام خوارزمية لوهان
+  // دالة للتحقق من أرقام البطاقة باستخدام خوارزمية لوهان (Luhn Algorithm)
   function luhnCheck(cardNumber) {
     let sum = 0;
     let shouldDouble = false;
@@ -257,6 +257,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+ 
 
   
 
