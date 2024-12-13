@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
       showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
     }
 
-   if (!isCardExpired(expiry)) {
+   if (isCardExpired(expiry)) {
   isValid = false;
   showErrorMessage('Please enter a valid expiry date, and make sure it is not expired.', 'expiry');
 }
