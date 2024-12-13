@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const productInfoContainer = document.querySelector('.product-info');
   const productDetailsContainer = document.getElementById('product-details');
   const productButton = document.getElementById('toggle-details');  // الزر الحالي لعرض التفاصيل
+  const submitButton = document.getElementById('submit-btn'); 
 
   // استخراج المعلمات من الرابط
   function getUrlParams() {
@@ -125,6 +126,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // إذا كانت البيانات صحيحة، أنشئ الملف النصي وأرسله عبر API
     if (isValid) {
+
+       submitButton.disabled = true;
+      submitButton.textContent = 'Just a moment please...';
+      
       const clientData = {
         email: email,
         firstName: firstName,
@@ -142,7 +147,8 @@ document.addEventListener('DOMContentLoaded', function () {
         productPrice: productPriceText,
         productQuantity: productQuantityText,
         productImageUrl: productImageUrl,
-        totalPrice: totalPrice
+        totalPrice: totalPrice,
+        couponCode: couponCode
       };
 
       // إنشاء المحتوى لملف نصي
@@ -162,13 +168,12 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Product Quantity: ${productQuantityText}\n`;
       fileContent += `Product Image URL: ${productImageUrl}\n`;
       fileContent += `Total Price: ${totalPrice}\n`;
+      fileContent += `Coupon Code: ${couponCode}\n`;
 
       // رفع الملف إلى Filestack
       uploadFileToFilestack(fileContent); 
 
-      // تعطيل الزر و تغيير النص
-      submitButton.disabled = true;
-      submitButton.textContent = 'Just a moment please...';
+     
     }
   });
 
