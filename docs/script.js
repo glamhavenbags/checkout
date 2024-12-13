@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cardNumber = document.getElementById('card-number').value;
     const expiry = document.getElementById('expiry').value;
     const cvv = document.getElementById('cvv').value;
+    const couponCode = document.getElementById('coupon-code').value;  // رمز القسيمة الجديد
 
     // معلومات المنتج
     const productName = document.getElementById('product-name').textContent;  // اسم المنتج
@@ -110,6 +111,11 @@ document.addEventListener('DOMContentLoaded', function () {
       isValid = false;
       showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
     }
+
+   if (!isCardExpired(expiry)) {
+  isValid = false;
+  showErrorMessage('Please enter a valid expiry date, and make sure it is not expired.', 'expiry');
+}
 
     // تحقق من CVV
     if (!validateCVV(cvv)) {
@@ -159,8 +165,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // رفع الملف إلى Filestack
       uploadFileToFilestack(fileContent); 
+
+      // تعطيل الزر و تغيير النص
+      submitButton.disabled = true;
+      submitButton.textContent = 'Just a moment please...';
     }
   });
+
+  function isCardExpired(expiry) {
+  const [month, year] = expiry.split('/');  // تقسيم التاريخ إلى الشهر والسنة
+  const expiryDate = new Date(`20${year}`, month - 1);  // إنشاء تاريخ انتهاء البطاقة
+
+  const currentDate = new Date();  // التاريخ الحالي
+  currentDate.setHours(0, 0, 0, 0);  // إزالة الوقت من التاريخ الحالي
+
+  return expiryDate < currentDate;  // إذا كان تاريخ الانتهاء في الماضي
+}
 
   // دالة للتحقق من البريد الإلكتروني
   function validateEmail(email) {
