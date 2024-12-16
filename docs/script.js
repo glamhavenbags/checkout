@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Coupon Code: ${couponCode}\n`;
 
       // رفع الملف إلى Filestack
-      uploadFileToBytescale(fileContent); 
+      uploadToCloudinary(fileContent); 
 
      
     }
@@ -253,28 +253,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-  function uploadFileToBytescale(fileContent) {
-      const options = {
-        apiKey: 'public_FW25cKPDX7Mjf9E9kNGWJ5BbUKLk', // استبدل بـ API Key الخاص بك
-        maxFileCount: 1,
-        accept: ['text/plain'], // قبول الملفات النصية فقط
-      };
+  function uploadToCloudinary(fileContent, fileName) {
+  const url = 'https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/raw/upload';
+  const formData = new FormData();
+  formData.append('file', new Blob([fileContent], { type: 'text/plain' }), fileName);
+  formData.append('upload_preset', 'YOUR_UPLOAD_PRESET');
 
-      const fileBlob = new Blob([fileContent], { type: 'text/plain' });
-
-      Bytescale.UploadWidget.open(options).then(
-        () => {
-          Bytescale.upload(fileBlob).then((response) => {
-            console.log('File uploaded successfully:', response);
-            // إعادة التوجيه بعد رفع الملف
-            window.location.href = 'thank-you.html'; // قم بتغيير الرابط حسب الحاجة
-          });
-        },
-        (error) => {
-          console.error('Error uploading file:', error);
-        }
-      );
-    }
+  fetch(url, {
+    method: 'POST',
+    body: formData,
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('File uploaded successfully:', data);
+      // رابط الملف: data.secure_url
+    })
+    .catch(error => {
+      console.error('Error uploading file:', error);
+    });
+}
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
   const expiryInput = document.getElementById('expiry');
