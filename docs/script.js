@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-  function uploadFileToBytescale(fileContent) {function uploadFileToBytescale(fileContent) {
+  function uploadFileToBytescale(fileContent) {
       const options = {
         apiKey: 'public_FW25cKPDX7Mjf9E9kNGWJ5BbUKLk', // استبدل بـ API Key الخاص بك
         maxFileCount: 1,
