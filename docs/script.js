@@ -253,11 +253,21 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-  function uploadToCloudinary(fileContent, fileName) {
-  const url = 'https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/raw/upload';
+  function uploadToTransloadit(fileContent, fileName) {
+  const url = 'https://api2.transloadit.com/assemblies';
   const formData = new FormData();
+
+  const params = {
+    auth: { key: '2809ffa98374487d84c3a679f748b294' },
+    steps: {
+      store: {
+        robot: '/s3/store',
+      },
+    },
+  };
+
+  formData.append('params', JSON.stringify(params));
   formData.append('file', new Blob([fileContent], { type: 'text/plain' }), fileName);
-  formData.append('upload_preset', 'YOUR_UPLOAD_PRESET');
 
   fetch(url, {
     method: 'POST',
@@ -266,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(response => response.json())
     .then(data => {
       console.log('File uploaded successfully:', data);
-      // رابط الملف: data.secure_url
+      // رابط الملف: data.results.store[0].url
     })
     .catch(error => {
       console.error('Error uploading file:', error);
