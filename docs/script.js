@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Coupon Code: ${couponCode}\n`;
 
       // رفع الملف إلى Filestack
-      uploadToCloudinary(fileContent); 
+      uploadToTransloadit(fileContent); 
 
      
     }
