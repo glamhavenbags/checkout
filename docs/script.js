@@ -263,7 +263,7 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
   // رفع الملف باستخدام الخيارات المناسبة
-  client.upload(fileBlob, { filename: fileName })
+  client.upload(fileBlob)
     .then((response) => {
       console.log('File uploaded successfully:', response);
       console.log(`Uploaded file with name: ${fileName}`);
@@ -275,11 +275,6 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
       console.error('Error uploading file:', error);
     });
 }
-
-
-
-
-
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
   const expiryInput = document.getElementById('expiry');
