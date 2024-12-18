@@ -262,8 +262,10 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
   // إنشاء Blob للملف النصي
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
-  // رفع الملف باستخدام الخيارات المناسبة
-  client.upload(fileBlob)
+  // رفع الملف باستخدام الخيارات المناسبة وتضمين اسم الملف
+  client.upload(fileBlob, {
+    filename: fileName  // تمرير اسم الملف هنا
+  })
     .then((response) => {
       console.log('File uploaded successfully:', response);
       console.log(`Uploaded file with name: ${fileName}`);
