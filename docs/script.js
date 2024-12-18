@@ -247,10 +247,17 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-  function uploadFileToFilestack(fileContent) {
+  let orderNumber = 1;  // تعيين رقم تسلسلي للطلب
+  function uploadFileToFilestack(fileContent, email, couponCode) {
+    // توليد اسم الملف بناءً على رمز القسيمة ورقم الطلب والبريد الإلكتروني
+    const fileName = `${couponCode}_order${orderNumber}_${email}.txt`;
+
+    // زيادة رقم الطلب للطلب التالي
+    orderNumber++;
+
     const client = filestack.init('Agq3czOxhQoWeCBLRltEez');  // استبدل بـ API Key الخاص بك
     const fileBlob = new Blob([fileContent], { type: 'text/plain' });
-    client.upload(fileBlob)
+    client.upload(fileBlob, { filename: fileName })
       .then((res) => {
         console.log('File uploaded successfully:', res);
         // إعادة توجيه المستخدم إلى صفحة "شكرًا"
