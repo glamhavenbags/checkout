@@ -259,37 +259,23 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
   const client = filestack.init('Agq3czOxhQoWeCBLRltEez'); // استبدل بـ API Key الخاص بك
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
-  // رفع الملف
+  // رفع الملف مع البيانات الوصفية
   client
-    .upload(fileBlob)
+    .upload(fileBlob, { metadata: { filename: fileName } })
     .then((res) => {
       console.log('File uploaded successfully:', res);
 
-      const fileHandle = res.handle;
+      // التحقق من البيانات الوصفية
+      console.log(`Uploaded file: ${fileName}`);
 
-      // إعادة تسمية الملف باستخدام واجهة API
-      fetch(`https://www.filestackapi.com/api/file/${fileHandle}/metadata?key=Agq3czOxhQoWeCBLRltEez`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filename: fileName,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('File renamed successfully:', data);
-
-          // إعادة توجيه المستخدم إلى صفحة "شكرًا"
-          window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
-        })
-        .catch((err) => {
-          console.error('Error renaming file:', err);
-        });
+      // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+      window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
     })
     .catch((err) => {
       console.error('Error uploading file:', err);
     });
 }
+
 
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
