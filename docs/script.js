@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
- let orderNumber = 1; // تعيين رقم تسلسلي للطلب
+let orderNumber = 1; // تعيين رقم تسلسلي للطلب
 
 function uploadFileToFilestack(fileContent, email, couponCode) {
   // توليد اسم الملف بناءً على رمز القسيمة ورقم الطلب والبريد الإلكتروني
@@ -259,11 +259,28 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
   const client = filestack.init('Agq3czOxhQoWeCBLRltEez'); // استبدل بـ API Key الخاص بك
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
-  // رفع الملف مع تحديد اسم الملف
+  // رفع الملف
   client
-    .upload(fileBlob, { filename: fileName })
+    .upload(fileBlob)
     .then((res) => {
       console.log('File uploaded successfully:', res);
+
+      // إعادة تسمية الملف باستخدام API إذا كانت تسمية الملف غير مدعومة أثناء الرفع
+      if (res && res.handle) {
+        const fileHandle = res.handle;
+        client
+          .metadata(fileHandle)
+          .then((metadata) => {
+            console.log('File metadata:', metadata);
+
+            // يمكن أن تستخدم metadata أو backend للتعامل مع اسم الملف إذا لزم الأمر
+            console.log(`Uploaded file: ${fileName}`);
+          })
+          .catch((err) => {
+            console.error('Error fetching metadata:', err);
+          });
+      }
+
       // إعادة توجيه المستخدم إلى صفحة "شكرًا"
       window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
     })
@@ -271,6 +288,7 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
       console.error('Error uploading file:', err);
     });
 }
+
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
   const expiryInput = document.getElementById('expiry');
