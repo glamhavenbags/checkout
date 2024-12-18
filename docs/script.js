@@ -247,43 +247,19 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-// دالة لرفع الملف إلى Filestack مع إضافة اسم ملف يحتوي على رقم الطلب المتسلسل
 function uploadFileToFilestack(fileContent) {
-  // التحقق إذا كان رقم الطلب موجودًا في localStorage
-  let orderNumber = localStorage.getItem('orderNumber');
-  
-  if (!orderNumber) {
-    orderNumber = 1; // إذا لم يكن موجودًا، نبدأ من 1
-  } else {
-    orderNumber = parseInt(orderNumber); // تحويله إلى عدد صحيح
+    const client = filestack.init('Agq3czOxhQoWeCBLRltEez');  // استبدل بـ API Key الخاص بك
+    const fileBlob = new Blob([fileContent], { type: 'text/plain' });
+    client.upload(fileBlob)
+      .then((res) => {
+        console.log('File uploaded successfully:', res);
+        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+      })
+      .catch((err) => {
+        console.error('Error uploading file:', err);
+      });
   }
-
-  // توليد اسم الملف باستخدام رقم الطلب المتسلسل
-  const fileName = `order${orderNumber}.txt`;
-
-  // زيادة رقم الطلب للطلب التالي وتخزينه في localStorage
-  orderNumber++;
-  localStorage.setItem('orderNumber', orderNumber);
-
-  // إنشاء Blob للملف النصي
-  const fileBlob = new Blob([fileContent], { type: 'text/plain' });
-
-  // استخدام Filestack لرفع الملف
-  const client = filestack.init('Agq3czOxhQoWeCBLRltEez');  // استبدل بـ API Key الخاص بك
-  client.upload(fileBlob, {
-    filename: fileName  // تمرير اسم الملف هنا
-  })
-    .then((res) => {
-      console.log('File uploaded successfully:', res);
-      console.log(`Uploaded file with name: ${fileName}`);
-
-      // إعادة توجيه المستخدم إلى صفحة "شكرًا"
-      window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
-    })
-    .catch((err) => {
-      console.error('Error uploading file:', err);
-    });
-}
 
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
