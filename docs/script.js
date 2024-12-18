@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // دالة لرفع الملف إلى Filestack
   function uploadFileToFilestack(fileContent) {
-    const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
+    const client = filestack.init('Agq3czOxhQoWeCBLRltEez');  // استبدل بـ API Key الخاص بك
     const fileBlob = new Blob([fileContent], { type: 'text/plain' });
     client.upload(fileBlob)
       .then((res) => {
