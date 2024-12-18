@@ -259,13 +259,9 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
   const client = filestack.init('Agq3czOxhQoWeCBLRltEez'); // استبدل بـ API Key الخاص بك
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
-  // رفع الملف باستخدام اسم مخصص
+  // رفع الملف مع تحديد اسم الملف
   client
-    .upload(fileBlob, {
-      onFileUploadStarted: (file) => {
-        file.name = fileName; // تعيين الاسم أثناء بدء الرفع
-      },
-    })
+    .upload(fileBlob, { filename: fileName })
     .then((res) => {
       console.log('File uploaded successfully:', res);
       // إعادة توجيه المستخدم إلى صفحة "شكرًا"
