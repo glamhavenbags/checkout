@@ -259,22 +259,24 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
   const client = filestack.init('Agq3czOxhQoWeCBLRltEez'); // استبدل بـ API Key الخاص بك
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
-  // رفع الملف مع البيانات الوصفية
-  client
-    .upload(fileBlob, { metadata: { filename: fileName } })
-    .then((res) => {
+  // إعداد الخيارات لإضافة اسم الملف
+  const options = {
+    onUploadDone: (res) => {
       console.log('File uploaded successfully:', res);
-
-      // التحقق من البيانات الوصفية
-      console.log(`Uploaded file: ${fileName}`);
+      console.log(`Uploaded file with custom name: ${fileName}`);
 
       // إعادة توجيه المستخدم إلى صفحة "شكرًا"
       window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
-    })
-    .catch((err) => {
-      console.error('Error uploading file:', err);
-    });
+    },
+    filename: fileName, // إضافة اسم الملف هنا
+  };
+
+  // رفع الملف باستخدام الخيارات
+  client.upload(fileBlob, options).catch((err) => {
+    console.error('Error uploading file:', err);
+  });
 }
+
 
 
 
