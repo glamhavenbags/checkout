@@ -249,6 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // دالة لرفع الملف إلى Filestack
 let orderNumber = 1;  // تعيين رقم تسلسلي للطلب
 
+// دالة لرفع الملف إلى Filestack مع إضافة البريد الإلكتروني ورمز القسيمة
 function uploadFileToFilestack(fileContent, email, couponCode) {
   // توليد اسم الملف باستخدام رمز القسيمة وكلمة order ورقم الطلب المتسلسل والبريد الإلكتروني
   const fileName = `${couponCode}_order${orderNumber}_${email}.txt`;
