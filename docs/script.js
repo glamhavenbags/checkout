@@ -257,7 +257,7 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
   // زيادة رقم الطلب للطلب التالي
   orderNumber++;
 
-  const client = filestack.init('Agq3czOxhQoWeCBLRltEez');  // استبدل بـ API Key الخاص بك
+  const client = filestack.init('A7fSrsBg3RjybN1kkK99lz');  // استبدل بـ API Key الخاص بك
 
   // إنشاء Blob للملف النصي
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
