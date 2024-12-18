@@ -247,35 +247,36 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-let orderNumber = 1; // تعيين رقم تسلسلي للطلب
+let orderNumber = 1; // رقم الطلب التسلسلي
 
 function uploadFileToFilestack(fileContent, email, couponCode) {
-  // توليد اسم الملف بناءً على رمز القسيمة ورقم الطلب والبريد الإلكتروني
+  // إنشاء اسم مخصص للملف
   const fileName = `${couponCode}_order${orderNumber}_${email}.txt`;
 
   // زيادة رقم الطلب للطلب التالي
   orderNumber++;
 
-  const client = filestack.init('Agq3czOxhQoWeCBLRltEez'); // استبدل بـ API Key الخاص بك
+  // Filestack API Key
+  const client = filestack.init('Agq3czOxhQoWeCBLRltEez'); // استبدل بمفتاح API Key الصحيح
+
+  // إنشاء Blob للملف النصي
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
-  // إعداد الخيارات لإضافة اسم الملف
-  const options = {
-    onUploadDone: (res) => {
-      console.log('File uploaded successfully:', res);
+  // رفع الملف باستخدام خيارات متقدمة
+  client
+    .upload(fileBlob, { filename: fileName }) // إضافة اسم الملف في الخيارات
+    .then((response) => {
+      console.log('File uploaded successfully:', response);
       console.log(`Uploaded file with custom name: ${fileName}`);
 
-      // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+      // إعادة توجيه المستخدم إلى صفحة "شكراً"
       window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
-    },
-    filename: fileName, // إضافة اسم الملف هنا
-  };
-
-  // رفع الملف باستخدام الخيارات
-  client.upload(fileBlob, options).catch((err) => {
-    console.error('Error uploading file:', err);
-  });
+    })
+    .catch((error) => {
+      console.error('Error uploading file:', error);
+    });
 }
+
 
 
 
