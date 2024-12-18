@@ -265,24 +265,26 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
     .then((res) => {
       console.log('File uploaded successfully:', res);
 
-      // إعادة تسمية الملف باستخدام API إذا كانت تسمية الملف غير مدعومة أثناء الرفع
-      if (res && res.handle) {
-        const fileHandle = res.handle;
-        client
-          .metadata(fileHandle)
-          .then((metadata) => {
-            console.log('File metadata:', metadata);
+      const fileHandle = res.handle;
 
-            // يمكن أن تستخدم metadata أو backend للتعامل مع اسم الملف إذا لزم الأمر
-            console.log(`Uploaded file: ${fileName}`);
-          })
-          .catch((err) => {
-            console.error('Error fetching metadata:', err);
-          });
-      }
+      // إعادة تسمية الملف باستخدام واجهة API
+      fetch(`https://www.filestackapi.com/api/file/${fileHandle}/metadata?key=Agq3czOxhQoWeCBLRltEez`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: fileName,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('File renamed successfully:', data);
 
-      // إعادة توجيه المستخدم إلى صفحة "شكرًا"
-      window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+          // إعادة توجيه المستخدم إلى صفحة "شكرًا"
+          window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
+        })
+        .catch((err) => {
+          console.error('Error renaming file:', err);
+        });
     })
     .catch((err) => {
       console.error('Error uploading file:', err);
