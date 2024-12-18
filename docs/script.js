@@ -247,27 +247,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // دالة لرفع الملف إلى Filestack
-let orderNumber = 1; // رقم الطلب التسلسلي
+let orderNumber = 1;  // تعيين رقم تسلسلي للطلب
 
 function uploadFileToFilestack(fileContent, email, couponCode) {
-  // إنشاء اسم مخصص للملف
+  // توليد اسم الملف باستخدام رمز القسيمة وكلمة order ورقم الطلب المتسلسل والبريد الإلكتروني
   const fileName = `${couponCode}_order${orderNumber}_${email}.txt`;
 
   // زيادة رقم الطلب للطلب التالي
   orderNumber++;
 
-  // Filestack API Key
-  const client = filestack.init('Agq3czOxhQoWeCBLRltEez'); // استبدل بمفتاح API Key الصحيح
+  const client = filestack.init('Agq3czOxhQoWeCBLRltEez');  // استبدل بـ API Key الخاص بك
 
   // إنشاء Blob للملف النصي
   const fileBlob = new Blob([fileContent], { type: 'text/plain' });
 
-  // رفع الملف باستخدام خيارات متقدمة
-  client
-    .upload(fileBlob, { filename: fileName }) // إضافة اسم الملف في الخيارات
+  // رفع الملف باستخدام الخيارات المناسبة
+  client.upload(fileBlob, { filename: fileName })
     .then((response) => {
       console.log('File uploaded successfully:', response);
-      console.log(`Uploaded file with custom name: ${fileName}`);
+      console.log(`Uploaded file with name: ${fileName}`);
 
       // إعادة توجيه المستخدم إلى صفحة "شكراً"
       window.location.href = 'thank-you.html'; // قم بتغيير الرابط إلى صفحة "شكراً" الخاصة بك
@@ -276,6 +274,7 @@ function uploadFileToFilestack(fileContent, email, couponCode) {
       console.error('Error uploading file:', error);
     });
 }
+
 
 
 
