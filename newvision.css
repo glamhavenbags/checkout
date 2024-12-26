@@ -1,0 +1,126 @@
+/* General Body and Layout */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: center;
+  }
+  
+  h1, h2, p {
+    margin: 0;
+    padding: 10px;
+  }
+  
+  /* Hero Section */
+  .hero {
+    background: #007BFF;
+    color: white;
+    padding: 50px 20px;
+    text-align: center;
+  }
+  
+  .hero-title {
+    font-size: 3em;
+    font-weight: bold;
+  }
+  
+  .highlight {
+    color: #FF9F00;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.5em;
+    margin-top: 10px;
+  }
+  
+  .cta {
+    font-size: 1.2em;
+    margin-top: 20px;
+    font-style: italic;
+  }
+  
+  /* About Section */
+  .about {
+    padding: 50px 20px;
+    background: #f4f4f9;
+  }
+  
+  .about h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+  
+  .about p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  
+  /* Sneak Peek Section */
+  .sneak-peek {
+    background: #FF9F00;
+    color: white;
+    padding: 50px 20px;
+  }
+  
+  .sneak-peek h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+  
+  .sneak-peek p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  
+  /* Teaser Section */
+  .teaser {
+    padding: 50px 20px;
+  }
+  
+  .teaser h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+  
+  .teaser p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    background: #007BFF;
+    color: white;
+    padding: 50px 20px;
+  }
+  
+  .cta-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+  
+  .cta-section p {
+    font-size: 1.1em;
+    margin-bottom: 30px;
+  }
+  
+  .cta-button {
+    font-size: 1.2em;
+    background: #FF9F00;
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+  }
+  
+  .cta-button:hover {
+    background: #FF7F00;
+    transition: 0.3s;
+  }
+  
